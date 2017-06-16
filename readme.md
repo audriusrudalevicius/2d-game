@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/d3trax/2d-game.svg?style=svg)](https://circleci.com/gh/d3trax/2d-game)
+
 Requirements
 ---
 * NPM Version 4.1.2
