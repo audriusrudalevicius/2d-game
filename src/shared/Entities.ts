@@ -1,11 +1,15 @@
 import {Map} from "./map/Map";
-import {Position} from "./map/Position";
 
 enum MovementDirection {
     UP      = 0,
     DOWN,
     LEFT,
     RIGHT
+}
+
+interface Position {
+    x: number;
+    y: number;
 }
 
 interface Movement {
@@ -32,6 +36,7 @@ interface Bomb {
 }
 
 export {
+    Position,
     Movement,
     GameState,
     Player,
