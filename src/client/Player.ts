@@ -16,7 +16,7 @@ export class Player implements GameObject {
     render(delta:number):void {
         this.context.fillStyle = "#000000";
         this.context.beginPath();
-        this.context.moveTo(this.x, this.y + 5);
+        this.context.moveTo(this.x, this.y + 50);
         this.context.stroke();
     }
 }
