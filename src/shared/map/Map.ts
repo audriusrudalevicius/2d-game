@@ -27,7 +27,7 @@ export class Map {
     }
 
     setTile(point: Point, blockType: number) {
-        this.map[point.x][point.y] = blockType;
+        this.map[point.y][point.x] = blockType;
     }
 
     toJSON() {
