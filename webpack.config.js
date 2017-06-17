@@ -41,5 +41,8 @@ module.exports = {
         ]
     },
     devtool: 'source-map',
-    devServer: {}
+    devServer: {
+        host: '0.0.0.0',
+        disableHostCheck: true
+    }
 };
