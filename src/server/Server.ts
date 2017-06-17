@@ -18,7 +18,7 @@ class Server {
 
   private io: SocketIO.Server;
   private httpServer: http.Server;
-  private clients: { [key: string]: Connection }
+  private clients: { [key: string]: Connection };
 
   constructor() {
     this.httpServer = http.createServer();
