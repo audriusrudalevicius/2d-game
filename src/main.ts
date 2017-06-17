@@ -1,4 +1,4 @@
-import {Engine} from "./client/engine";
+import {Engine} from "./client/Engine";
 import {InputManager} from "./client/InputManager";
 import {Renderer} from "./client/Renderer";
 import NetworkService, {getNetworkService} from "./client/NetworkService";
