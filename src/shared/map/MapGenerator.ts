@@ -1,6 +1,6 @@
 import {Map} from "./Map";
 import {Point} from "./Point";
-import {BLOCK_TYPE} from "./block";
+import {BLOCK_TYPE} from "../block";
 
 export class MapGenerator {
     private map: Map;
