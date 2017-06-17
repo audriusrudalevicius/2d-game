@@ -62,6 +62,7 @@ export class Engine {
     }
 
     private update(delta: number): void {
+        this.inoutEvents();
         this._objects.forEach((gameObject) => {
             gameObject.update(delta)
         });
@@ -82,5 +83,13 @@ export class Engine {
         this.render(this.timer.delta);
         this.timer.end();
         requestAnimationFrame(() => this.frame());
+    }
+
+    private inoutEvents() {
+
+        const player = <Player> this._objects.get('myPlayer');
+        if (this.inputManager.movingLeft) {
+
+        }
     }
 }
