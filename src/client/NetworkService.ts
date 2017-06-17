@@ -2,12 +2,11 @@ import * as SocketIOClient from 'socket.io-client';
 import {
   Event,
   EventTypes,
-
   ConnectionEstablishedPayload
 } from '../shared/logic/Events';
-import Connection from '../shared/connection';
-import SocketEvents from '../shared/socketevents';
 
+import Connection from '../shared/ConnectionInfo';
+import SocketEvents from '../shared/SocketEvents';
 
 class NetworkService {
   private static _instance: NetworkService;
@@ -54,5 +53,5 @@ class NetworkService {
   };
 }
 
-const getNetworkService = NetworkService.getInstance;
-export default getNetworkService;
+export const getNetworkService = NetworkService.getInstance;
+export default NetworkService;

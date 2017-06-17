@@ -4,7 +4,7 @@ import {InputManager} from "./InputManager";
 import {Player} from "./entities/Player";
 import {GameObject} from "./GameObject";
 import {Grid} from "./Grid";
-import NetworkService from "./NetworkService";
+import NetworkService, {getNetworkService} from "./NetworkService";
 
 export class Engine {
     private _objects: Map<string, GameObject> = new Map<string, GameObject>();

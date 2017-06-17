@@ -1,3 +1,5 @@
+import Connection from '../ConnectionInfo';
+
 interface Event<T> {
     type: string,
     timestamp: number
@@ -5,13 +7,33 @@ interface Event<T> {
 }
 
 const EventTypes = {
+    CONNECTION_ESTABLISHED: 'CONNECTION_ESTABLISHED',
     PLAYER_CONNECTED: 'PLAYER_CONNECTED',
     PLAYER_DISCONNECTED: 'PLAYER_DISCONNECTED'
 };
 
+interface ConnectionEstablishedPayload {
+    connectionInfo: Connection,
+    map: number[][]
+}
+
 interface PlayerConnectedPayload {
     clientID: string
 }
+
+interface PlayerConnectedPayload {
+    clientID: string
+}
+
+const connectionEstablished = (payload: ConnectionEstablishedPayload): Event<ConnectionEstablishedPayload> => {
+    return {
+        type: EventTypes.CONNECTION_ESTABLISHED,
+        timestamp: new Date().getTime(),
+        payload: {
+            ...payload
+        }
+    }
+};
 
 const playerConnected = (payload: PlayerConnectedPayload): Event<PlayerConnectedPayload> => {
     return {
@@ -38,5 +60,8 @@ export {
     EventTypes,
 
     playerConnected,
-    playerDisconnected
+    playerDisconnected,
+    connectionEstablished,
+
+    ConnectionEstablishedPayload
 }

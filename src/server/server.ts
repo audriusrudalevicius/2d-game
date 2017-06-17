@@ -1,8 +1,8 @@
 import * as http from 'http';
 import * as SocketIO from 'socket.io';
 
-import Connection from '../shared/connection';
-import SocketEvents from '../shared/socketevents';
+import Connection from '../shared/ConnectionInfo';
+import SocketEvents from '../shared/SocketEvents';
 
 import {
   Event,
