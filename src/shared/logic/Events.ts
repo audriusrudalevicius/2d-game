@@ -1,6 +1,8 @@
 import {
-    ConnectionEstablishedPayload,
-    PlayerConnectedPayload
+    ClientMovePayload,
+    ServerConnectionEstablishedPayload,
+    ServerPlayerConnectedPayload,
+    ServerPlayerMovedPayload
 } from './Payloads';
 
 interface Event<T> {
@@ -10,14 +12,17 @@ interface Event<T> {
 }
 
 const EventTypes = {
-    CONNECTION_ESTABLISHED: 'CONNECTION_ESTABLISHED',
-    PLAYER_CONNECTED: 'PLAYER_CONNECTED',
-    PLAYER_DISCONNECTED: 'PLAYER_DISCONNECTED'
+    SERVER_CONNECTION_ESTABLISHED: 'SERVER_CONNECTION_ESTABLISHED',
+    SERVER_PLAYER_CONNECTED: 'SERVER_PLAYER_CONNECTED',
+    SERVER_PLAYER_DISCONNECTED: 'SERVER_PLAYER_DISCONNECTED',
+
+    SERVER_PLAYER_MOVED: 'SERVER_PLAYER_MOVED',
+    CLIENT_MOVE: 'CLIENT_MOVE'
 };
 
-const connectionEstablished = (payload: ConnectionEstablishedPayload): Event<ConnectionEstablishedPayload> => {
+const serverConnectionEstablished = (payload: ServerConnectionEstablishedPayload): Event<ServerConnectionEstablishedPayload> => {
     return {
-        type: EventTypes.CONNECTION_ESTABLISHED,
+        type: EventTypes.SERVER_CONNECTION_ESTABLISHED,
         timestamp: new Date().getTime(),
         payload: {
             ...payload
@@ -25,9 +30,9 @@ const connectionEstablished = (payload: ConnectionEstablishedPayload): Event<Con
     }
 };
 
-const playerConnected = (payload: PlayerConnectedPayload): Event<PlayerConnectedPayload> => {
+const serverPlayerConnected = (payload: ServerPlayerConnectedPayload): Event<ServerPlayerConnectedPayload> => {
     return {
-        type: EventTypes.PLAYER_CONNECTED,
+        type: EventTypes.SERVER_PLAYER_CONNECTED,
         timestamp: new Date().getTime(),
         payload: {
             ...payload
@@ -35,21 +40,44 @@ const playerConnected = (payload: PlayerConnectedPayload): Event<PlayerConnected
     };
 };
 
-const playerDisconnected = (payload: PlayerConnectedPayload): Event<PlayerConnectedPayload> => {
+const serverPlayerDisconnected = (payload: ServerPlayerConnectedPayload): Event<ServerPlayerConnectedPayload> => {
     return {
-        type: EventTypes.PLAYER_DISCONNECTED,
+        type: EventTypes.SERVER_PLAYER_DISCONNECTED,
         timestamp: new Date().getTime(),
         payload: {
             ...payload
         }
     };
+};
+
+const serverPlayerMoved = (payload: ServerPlayerMovedPayload): Event<ServerPlayerMovedPayload> => {
+    return {
+        type: EventTypes.SERVER_PLAYER_MOVED,
+        timestamp: new Date().getTime(),
+        payload: {
+            ...payload
+        }
+    }
+};
+
+const clientMove = (payload: ClientMovePayload): Event<ClientMovePayload> => {
+    return {
+        type: EventTypes.CLIENT_MOVE,
+        timestamp: new Date().getTime(),
+        payload: {
+            ...payload
+        }
+    }
 };
 
 export {
     Event,
     EventTypes,
 
-    playerConnected,
-    playerDisconnected,
-    connectionEstablished
+    serverPlayerConnected,
+    serverPlayerDisconnected,
+    serverConnectionEstablished,
+
+    serverPlayerMoved,
+    clientMove
 }

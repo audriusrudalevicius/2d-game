@@ -1,6 +1,7 @@
 import Connection from '../ConnectionInfo';
+import { Position, Movement } from '../Entities';
 
-interface ConnectionEstablishedPayload {
+interface ServerConnectionEstablishedPayload {
     connectionInfo: Connection,
     state: {
         mapState: number[][],
@@ -8,11 +9,25 @@ interface ConnectionEstablishedPayload {
     }
 }
 
-interface PlayerConnectedPayload {
-    clientID: string
+interface ServerPlayerConnectedPayload {
+    playerID: string
+}
+
+interface ServerPlayerMovedPayload {
+    playerID: string,
+    position: Position;
+}
+
+interface ClientMovePayload {
+    clientID: string,
+    position: Position,
+    movement: Movement
 }
 
 export {
-    ConnectionEstablishedPayload,
-    PlayerConnectedPayload
+    ServerConnectionEstablishedPayload,
+    ServerPlayerConnectedPayload,
+    ServerPlayerMovedPayload,
+
+    ClientMovePayload
 };
