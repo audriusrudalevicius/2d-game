@@ -1,7 +1,7 @@
 import {Timer} from "./Timer";
 import {Renderer} from "./Renderer";
 import {InputManager} from "./InputManager";
-import {Player} from "./Player";
+import {Player} from "./entities/Player";
 import {GameObject} from "./GameObject";
 import {Grid} from "./Grid";
 

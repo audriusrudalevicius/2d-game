@@ -21,7 +21,7 @@ interface Connection {
 }
 
 class Server {
-  public static PORT: number = 8080;
+  public static PORT: number = 3000;
 
   private io: SocketIO.Server;
   private httpServer: http.Server;
@@ -49,7 +49,8 @@ class Server {
         connectionTimestamp: new Date().getTime()
       }
 
-      this.io.emit('event', playerConnected({ clientID: this.clients[socket.id].clientID }));
+      socket.broadcast.emit('event', playerConnected({ clientID: this.clients[socket.id].clientID }));
+      socket.emit('connected', this.clients[socket.id]);
       console.log(`Server received client connection with id: ${ socket.id }`);
 
       socket.on(SocketEvents.Event, (event: Event<any>) => {
@@ -67,4 +68,3 @@ class Server {
 }
 
 export default Server;
-

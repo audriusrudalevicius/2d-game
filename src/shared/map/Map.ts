@@ -1,4 +1,5 @@
-import { BLOCK_TYPE } from "./block";
+import { BLOCK_TYPE } from "../block";
+import {Point} from "./Point";
 
 export class Map {
     private rows: number;
@@ -11,6 +12,7 @@ export class Map {
 
         this.map = this.generateMap();
     }
+
     private generateMap() {
         const gameMap =[];
 
@@ -24,7 +26,11 @@ export class Map {
         return gameMap;
     }
 
-    public isEmpty(point: Point) {
-        return
+    setTile(point: Point, blockType: number) {
+        this.map[point.x][point.y] = blockType;
+    }
+
+    toJSON() {
+        return this.map.toJson();
     }
 }
