@@ -46,7 +46,7 @@ class NetworkService {
   public listen() {
     this.socket.on(SocketEvents.Event, (event: Event<any>) => {
       switch (event.type) {
-        case EventTypes.CONNECTION_ESTABLISHED:
+        case EventTypes.SERVER_CONNECTION_ESTABLISHED:
           let payload = event.payload as ConnectionEstablishedPayload;
           this._connectionInfo = payload.connectionInfo;
       }
