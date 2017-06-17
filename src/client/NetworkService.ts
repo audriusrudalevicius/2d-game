@@ -9,29 +9,44 @@ interface ConnectionInfo {
 }
 
 class NetworkService {
+  private static _instance: NetworkService;
+  public static getInstance() {
+    if (this._instance === null || this._instance === undefined) {
+      this._instance = new NetworkService();
+    }
+
+    return this._instance;
+  }
+
   private socket: SocketIOClient.Socket;
-  private connectionInfo: ConnectionInfo;
+
+  private _connectionInfo: ConnectionInfo;
+  public getConnectionInfo() {
+    return this._connectionInfo;
+  }
 
   constructor() {
-    this.socket = SocketIOClient('http://localhost:3000', {
-      forceNew: false
-    });
+    this.socket = SocketIOClient('http://localhost:3000', { forceNew: false });
   }
 
   public connect() {
     this.socket.open();
     this.socket.on('connected', (data: any) => {
-      this.connectionInfo = data;
+      this._connectionInfo = data;
     });
 
-    this.init();
+    this.listen();
   }
 
   public disconnect() {
     this.socket.disconnect();
   }
 
-  public init() {
+  public send(event: Event<any>) {
+    this.socket.emit('event', event);
+  }
+
+  public listen() {
     this.socket.on('event', (event: Event<any>) => {
       switch (event.type) {
         /* */
@@ -40,4 +55,5 @@ class NetworkService {
   };
 }
 
-export default NetworkService;
+const getNetworkService = NetworkService.getInstance;
+export default getNetworkService;
