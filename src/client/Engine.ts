@@ -3,7 +3,7 @@ import {Renderer} from "./Renderer";
 import {InputManager} from "./InputManager";
 import {Player} from "./entities/Player";
 import {GameObject} from "./GameObject";
-import {Grid} from "./Grid";
+import {Grid} from "./entities/Grid";
 import NetworkService, {getNetworkService} from "./NetworkService";
 
 export class Engine {
