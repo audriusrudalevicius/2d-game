@@ -25,11 +25,8 @@ class NetworkService {
     return this._connectionInfo;
   }
 
-  constructor() {
-    this.socket = SocketIOClient('http://localhost:3000', { forceNew: false });
-  }
-
   public connect() {
+    this.socket = SocketIOClient('http://localhost:3000');
     this.socket.open();
     this.listen();
   }
