@@ -50,7 +50,7 @@ class Server {
         connectionTimestamp: new Date().getTime()
       };
 
-      this.gameState.addPlayer(this.clients[socket.id]);
+      this.gameState.addPlayer(socket.id);
 
       socket.broadcast.emit(
         SocketEvents.Event,
@@ -78,6 +78,7 @@ class Server {
       socket.on(SocketEvents.Disconnect, () => {
         this.io.emit('event', serverPlayerDisconnected({ playerID: this.clients[socket.id].clientID }));
         delete this.clients[socket.id];
+        this.gameState.removePlayer(socket.id);
       });
     });
   }
