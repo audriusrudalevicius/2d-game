@@ -2,8 +2,8 @@ import {Engine} from "../Engine";
 import {GameObject} from "../GameObject";
 
 export class Grid implements GameObject {
-    private dx:number = 50;
-    private dy:number = 50;
+    private dx:number = 40;
+    private dy:number = 40;
     private x:number = 0;
     private y:number = 0;
     private w:number = 1400;
