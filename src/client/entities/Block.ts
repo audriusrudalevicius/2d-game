@@ -1,4 +1,4 @@
-import {BLOCK_TYPE} from "../../shared/block";
+import {BLOCK_TYPE} from "../../shared/BlockType";
 export class Block {
     private type:number;
     private x:number;

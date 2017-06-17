@@ -1,4 +1,4 @@
-import {KEY} from "../shared/keys";
+import {KEY} from "../shared/Keys";
 
 export class InputManager {
     private canvas: HTMLCanvasElement;

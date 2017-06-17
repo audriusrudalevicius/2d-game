@@ -1,4 +1,4 @@
-import { BLOCK_TYPE } from "./block";
+import { BLOCK_TYPE } from "./BlockType";
 import {Point} from "./Point";
 
 export class Map {
