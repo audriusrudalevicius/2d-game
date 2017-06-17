@@ -7,7 +7,7 @@ const KEY = {
     ESC: 27
 };
 
-class Engine {
+export class Engine {
     private _objects: Map<string, GameObject> = new Map<string, GameObject>();
     private timer: Timer;
     private _renderer: Renderer;
@@ -71,7 +71,7 @@ class Engine {
     }
 }
 
-class Renderer {
+export class Renderer {
     private _context: CanvasRenderingContext2D;
 
     constructor(context: CanvasRenderingContext2D) {
@@ -86,7 +86,7 @@ class Renderer {
     }
 }
 
-class Timer {
+export class Timer {
     private last: number = 0;
     private now: number;
     public delta: number;
@@ -106,7 +106,7 @@ class Timer {
     }
 }
 
-class InputManager {
+export class InputManager {
     private canvas: HTMLCanvasElement;
 
     movingUp: boolean;
@@ -155,7 +155,7 @@ interface GameObject {
 }
 
 
-class Player implements GameObject {
+export class Player implements GameObject {
     private x:number = 0;
     private y:number = 0;
     private context:CanvasRenderingContext2D;
