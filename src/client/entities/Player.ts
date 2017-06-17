@@ -22,7 +22,7 @@ export class Player implements GameObject {
         this.context.beginPath();
         this.context.arc(coords.x + BLOCK_SIZE_W / 2, coords.y + BLOCK_SIZE_H / 2, PLAYER_SIZE / 2, 0, 2 * Math.PI);
         this.context.fill();
-        this.context.stroke();
         this.context.closePath();
+        this.context.stroke();
     }
 }

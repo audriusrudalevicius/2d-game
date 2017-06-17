@@ -1,5 +1,5 @@
 import { BLOCK_TYPE } from "../BlockType";
-import {Point} from "./Point";
+import {Position} from "./Position";
 
 export class Map {
     private rows: number;
@@ -26,11 +26,26 @@ export class Map {
         return gameMap;
     }
 
-    setTile(point: Point, blockType: number) {
-        this.map[point.y][point.x] = blockType;
+    setTile(position: Position, blockType: number) {
+        this.map[position.y][position.x] = blockType;
     }
 
     getMap() {
         return this.map;
+    }
+
+    getRandomEmptyPosition(): Position {
+        const row = this.getRandomNumber(this.rows);
+        const col = this.getRandomNumber(this.cols);
+
+        return this.map.isEmpty(new Position(row,col)) ? new Position(row,col) : this.getRandomEmptyPosition();
+    }
+
+    isEmpty(position: Position) {
+        return this.map[position.y][position.x] === 0
+    }
+
+    private getRandomNumber(number:number):number {
+        return Math.floor(Math.random() * number) + 0;
     }
 }

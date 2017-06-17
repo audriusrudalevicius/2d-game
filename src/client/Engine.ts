@@ -4,7 +4,8 @@ import {InputManager} from "./InputManager";
 import {Player} from "./entities/Player";
 import {GameObject} from "./GameObject";
 import {Grid} from "./entities/Grid";
-import NetworkService, {getNetworkService} from "./NetworkService";
+import {Block} from "./entities/Block";
+import NetworkService from "./NetworkService";
 
 export class Engine {
     private _objects: Map<string, GameObject> = new Map<string, GameObject>();
@@ -24,6 +25,7 @@ export class Engine {
     constructScene():void {
         this._objects.set("myPlayer", new Player());
         this._objects.set("myGrid", new Grid());
+        this._objects.set("myBlock", new Block());
     }
 
     run() {

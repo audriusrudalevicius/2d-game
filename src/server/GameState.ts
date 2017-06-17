@@ -1,16 +1,31 @@
 import {MapGenerator} from "../shared/map/MapGenerator";
 import {Map} from "../shared/map/Map";
+import {GameState as GameStateInterface, Player as PlayerInterface, Bomb} from '../shared/Entities';
+import {Player} from "./entities/Player";
 
-export class GameState {
+const MAP = {
+    rows: 11,
+    cols: 15
+};
+
+interface randomNumber {
+    x: number,
+    y: number
+}
+
+
+export class GameState implements GameStateInterface {
     private mapGenerator: MapGenerator;
-    private map: Map;
+    map: Map;
+    players: Array<PlayerInterface>;
+    bombs: Array<Bomb>;
 
     constructor(mapGenerator: MapGenerator) {
         this.mapGenerator = mapGenerator;
     }
 
     public start() {
-        this.map = this.mapGenerator.generate(11, 15);
+        this.map = this.mapGenerator.generate(MAP.rows, MAP.cols);
     }
 
     public getState() {
@@ -18,5 +33,15 @@ export class GameState {
             mapState: this.map.getMap(),
             gameState: {}
         }
+    }
+
+    public addPlayer(playerId: string) {
+        this.players.push(
+            new Player(playerId, this.map.getRandomEmptyPosition())
+        );
+    }
+
+    public removePlayer(playerId: string) {
+        this.players  = this.players.filter(player => player.clientID !== playerId);
     }
 }

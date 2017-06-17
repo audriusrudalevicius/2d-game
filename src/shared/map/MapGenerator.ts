@@ -1,5 +1,5 @@
 import {Map} from "./Map";
-import {Point} from "./Point";
+import {Position} from "./Position";
 import {BLOCK_TYPE} from "../BlockType";
 
 export class MapGenerator {
@@ -7,13 +7,13 @@ export class MapGenerator {
         const map = new Map(rows, cols);
 
         for (let row = 0; row < cols; row++) {
-            map.setTile(new Point(row, 0), BLOCK_TYPE.SOLID);
-            map.setTile(new Point(row, rows-1), BLOCK_TYPE.SOLID);
+            map.setTile(new Position(row, 0), BLOCK_TYPE.SOLID);
+            map.setTile(new Position(row, rows-1), BLOCK_TYPE.SOLID);
         }
 
         for (let col = 0; col < rows; col++) {
-            map.setTile(new Point(0, col), BLOCK_TYPE.SOLID);
-            map.setTile(new Point(cols-1, col), BLOCK_TYPE.SOLID);
+            map.setTile(new Position(0, col), BLOCK_TYPE.SOLID);
+            map.setTile(new Position(cols-1, col), BLOCK_TYPE.SOLID);
         }
 
 
@@ -24,7 +24,7 @@ export class MapGenerator {
 
             for (let col = 2; col < cols - 2; col++) {
                 if (col % 2 == 0) {
-                    map.setTile(new Point(col, row), BLOCK_TYPE.SOLID);
+                    map.setTile(new Position(col, row), BLOCK_TYPE.SOLID);
                 }
             }
         }
