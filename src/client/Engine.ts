@@ -3,6 +3,7 @@ import {Renderer} from "./Renderer";
 import {InputManager} from "./InputManager";
 import {Player} from "./Player";
 import {GameObject} from "./GameObject";
+import {Grid} from "./Grid";
 
 export class Engine {
     private _objects: Map<string, GameObject> = new Map<string, GameObject>();
@@ -18,6 +19,7 @@ export class Engine {
 
     constructScene():void {
         this._objects.set("myPlayer", new Player());
+        this._objects.set("myGrid", new Grid());
     }
 
     start() {
