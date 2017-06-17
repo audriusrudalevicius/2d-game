@@ -7,7 +7,7 @@ import {
 
   playerConnected,
   playerDisconnected
-} from '../shared/events';
+} from '../shared/logic/Events';
 
 const SocketEvents = {
   Connection: 'connection',

@@ -3,12 +3,15 @@ import {Renderer} from "./Renderer";
 import {InputManager} from "./InputManager";
 import {Player} from "./entities/Player";
 import {GameObject} from "./GameObject";
+import NetworkService from "./NetworkService";
 
 export class Engine {
     private _objects: Map<string, GameObject> = new Map<string, GameObject>();
     private timer: Timer;
     private _renderer: Renderer;
     private _inputManager: InputManager;
+    private _net: NetworkService;
+    private offline = true;
 
     constructor(renderer: Renderer, input: InputManager) {
         this._renderer = renderer;
@@ -20,14 +23,14 @@ export class Engine {
         this._objects.set("myPlayer", new Player());
     }
 
-    start() {
+    run() {
         this.timer = new Timer();
-        this.buildScene();
-        this._renderer.init();
-        this._inputManager.bind();
-        this.update(0);
-        this.render(0);
-        requestAnimationFrame(() => this.frame());
+        if (!this.offline) {
+            this._net.connect();
+            // start after connection
+        } else {
+            this.start();
+        }
     }
 
     get objects(): Map<string, GameObject> {
@@ -40,6 +43,15 @@ export class Engine {
 
     get inputManager(): InputManager {
         return this._inputManager;
+    }
+
+    private start(): void {
+        this.buildScene();
+        this._renderer.init();
+        this._inputManager.bind();
+        this.update(0);
+        this.render(0);
+        requestAnimationFrame(() => this.frame());
     }
 
     private buildScene(): void {

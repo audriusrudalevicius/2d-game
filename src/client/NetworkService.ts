@@ -1,7 +1,7 @@
 import * as SocketIOClient from 'socket.io-client';
 import {
   Event
-} from '../shared/events';
+} from '../shared/logic/Events';
 
 interface ConnectionInfo {
   clientID: string,
