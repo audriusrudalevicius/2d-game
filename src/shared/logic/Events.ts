@@ -1,4 +1,7 @@
-import Connection from '../ConnectionInfo';
+import {
+    ConnectionEstablishedPayload,
+    PlayerConnectedPayload
+} from './Payloads';
 
 interface Event<T> {
     type: string,
@@ -11,19 +14,6 @@ const EventTypes = {
     PLAYER_CONNECTED: 'PLAYER_CONNECTED',
     PLAYER_DISCONNECTED: 'PLAYER_DISCONNECTED'
 };
-
-interface ConnectionEstablishedPayload {
-    connectionInfo: Connection,
-    map: number[][]
-}
-
-interface PlayerConnectedPayload {
-    clientID: string
-}
-
-interface PlayerConnectedPayload {
-    clientID: string
-}
 
 const connectionEstablished = (payload: ConnectionEstablishedPayload): Event<ConnectionEstablishedPayload> => {
     return {
@@ -61,7 +51,5 @@ export {
 
     playerConnected,
     playerDisconnected,
-    connectionEstablished,
-
-    ConnectionEstablishedPayload
+    connectionEstablished
 }
