@@ -3,6 +3,7 @@ import * as SocketIO from 'socket.io';
 
 import Connection from '../shared/ConnectionInfo';
 import SocketEvents from '../shared/SocketEvents';
+import { GameState } from "./GameState";
 
 import {
   Event,
@@ -12,7 +13,10 @@ import {
   serverPlayerDisconnected,
   serverConnectionEstablished
 } from '../shared/logic/Events';
-import {GameState} from "./GameState";
+
+import {
+  ClientMovePayload
+} from "../shared/logic/Payloads";
 
 class Server {
   public static PORT: number = 3000;
@@ -63,7 +67,9 @@ class Server {
 
       socket.on(SocketEvents.Event, (event: Event<any>) => {
         switch (event.type) {
-          /* */
+          case EventTypes.CLIENT_MOVE:
+            let payload = event.payload as ClientMovePayload;
+            /* Validate movement */ break;
         }
       });
 
