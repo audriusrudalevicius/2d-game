@@ -1,9 +1,13 @@
 import * as SocketIOClient from 'socket.io-client';
+
 import {
   Event,
-  EventTypes,
-  ConnectionEstablishedPayload
+  EventTypes
 } from '../shared/logic/Events';
+
+import {
+  ConnectionEstablishedPayload
+} from '../shared/logic/Payloads';
 
 import Connection from '../shared/ConnectionInfo';
 import SocketEvents from '../shared/SocketEvents';
