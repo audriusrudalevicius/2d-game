@@ -30,7 +30,7 @@ export class Map {
         this.map[point.y][point.x] = blockType;
     }
 
-    toJSON() {
-        return this.map.toJson();
+    getMap() {
+        return this.map;
     }
 }

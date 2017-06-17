@@ -14,6 +14,6 @@ export class GameState {
     }
 
     public getMapState() {
-        return this.map.toJSON();
+        return this.map.getMap();
     }
 }
