@@ -13,7 +13,10 @@ export class GameState {
         this.map = this.mapGenerator.generate(11, 15);
     }
 
-    public getMapState() {
-        return this.map.getMap();
+    public getState() {
+        return {
+            mapState: this.map.getMap(),
+            gameState: {}
+        }
     }
 }

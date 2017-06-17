@@ -27,7 +27,6 @@ class Server {
     this.io = this.init(this.httpServer);
 
     this.gameState = gameState;
-    this.gameState = gameState;
 
     this.clients = {};
   }
@@ -56,7 +55,7 @@ class Server {
         SocketEvents.Event,
         connectionEstablished({
           connectionInfo: this.clients[socket.id],
-          map: this.gameState.getMapState()
+          state: this.gameState.getState()
         })
       );
 

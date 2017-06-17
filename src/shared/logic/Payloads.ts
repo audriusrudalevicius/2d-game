@@ -2,7 +2,10 @@ import Connection from '../ConnectionInfo';
 
 interface ConnectionEstablishedPayload {
     connectionInfo: Connection,
-    map: number[][]
+    state: {
+        mapState: number[][],
+        gameState: any
+    }
 }
 
 interface PlayerConnectedPayload {
