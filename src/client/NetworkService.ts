@@ -1,43 +1,58 @@
 import * as SocketIOClient from 'socket.io-client';
 import {
-  Event
-} from '../shared/logic/Events';
+  Event,
+  EventTypes,
 
-interface ConnectionInfo {
-  clientID: string,
-  connectionTimestamp: number
-}
+  ConnectionEstablishedPayload
+} from '../shared/logic/Events';
+import Connection from '../shared/connection';
+import SocketEvents from '../shared/socketevents';
+
 
 class NetworkService {
+  private static _instance: NetworkService;
+  public static getInstance() {
+    if (this._instance === null || this._instance === undefined) {
+      this._instance = new NetworkService();
+    }
+
+    return this._instance;
+  }
+
   private socket: SocketIOClient.Socket;
-  private connectionInfo: ConnectionInfo;
+
+  private _connectionInfo: Connection;
+  public getConnectionInfo() {
+    return this._connectionInfo;
+  }
 
   constructor() {
-    this.socket = SocketIOClient('http://localhost:3000', {
-      forceNew: false
-    });
+    this.socket = SocketIOClient('http://localhost:3000', { forceNew: false });
   }
 
   public connect() {
     this.socket.open();
-    this.socket.on('connected', (data: any) => {
-      this.connectionInfo = data;
-    });
-
-    this.init();
+    this.listen();
   }
 
   public disconnect() {
     this.socket.disconnect();
   }
 
-  public init() {
-    this.socket.on('event', (event: Event<any>) => {
+  public send(event: Event<any>) {
+    this.socket.emit(SocketEvents.Event, event);
+  }
+
+  public listen() {
+    this.socket.on(SocketEvents.Event, (event: Event<any>) => {
       switch (event.type) {
-        /* */
+        case EventTypes.CONNECTION_ESTABLISHED:
+          let payload = event.payload as ConnectionEstablishedPayload;
+          this._connectionInfo = payload.connectionInfo;
       }
     })
   };
 }
 
-export default NetworkService;
+const getNetworkService = NetworkService.getInstance;
+export default getNetworkService;

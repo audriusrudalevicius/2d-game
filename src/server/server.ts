@@ -1,24 +1,17 @@
 import * as http from 'http';
 import * as SocketIO from 'socket.io';
 
-import { 
+import Connection from '../shared/connection';
+import SocketEvents from '../shared/socketevents';
+
+import {
   Event,
   EventTypes,
 
   playerConnected,
-  playerDisconnected
+  playerDisconnected,
+  connectionEstablished
 } from '../shared/logic/Events';
-
-const SocketEvents = {
-  Connection: 'connection',
-  Event: 'event',
-  Disconnect: 'disconnect'
-};
-
-interface Connection {
-  clientID: string,
-  connectionTimestamp: number
-}
 
 class Server {
   public static PORT: number = 3000;
@@ -47,10 +40,21 @@ class Server {
       this.clients[socket.id] = {
         clientID: socket.id,
         connectionTimestamp: new Date().getTime()
-      }
+      };
 
-      socket.broadcast.emit('event', playerConnected({ clientID: this.clients[socket.id].clientID }));
-      socket.emit('connected', this.clients[socket.id]);
+      socket.broadcast.emit(
+        SocketEvents.Event,
+        playerConnected({ clientID: this.clients[socket.id].clientID })
+      );
+
+      socket.emit(
+        SocketEvents.Event,
+        connectionEstablished({
+          connectionInfo: this.clients[socket.id],
+          map: []
+        })
+      );
+
       console.log(`Server received client connection with id: ${ socket.id }`);
 
       socket.on(SocketEvents.Event, (event: Event<any>) => {
@@ -68,4 +72,3 @@ class Server {
 }
 
 export default Server;
-
