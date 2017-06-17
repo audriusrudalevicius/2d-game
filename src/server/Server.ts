@@ -12,6 +12,7 @@ import {
   playerDisconnected,
   connectionEstablished
 } from '../shared/logic/Events';
+import {GameState} from "./GameState";
 
 class Server {
   public static PORT: number = 3000;
@@ -19,10 +20,14 @@ class Server {
   private io: SocketIO.Server;
   private httpServer: http.Server;
   private clients: { [key: string]: Connection };
+  private gameState: GameState;
 
-  constructor() {
+  constructor(gameState: GameState) {
     this.httpServer = http.createServer();
     this.io = this.init(this.httpServer);
+
+    this.gameState = gameState;
+    this.gameState = gameState;
 
     this.clients = {};
   }
@@ -51,7 +56,7 @@ class Server {
         SocketEvents.Event,
         connectionEstablished({
           connectionInfo: this.clients[socket.id],
-          map: []
+          map: this.gameState.getMapState()
         })
       );
 
