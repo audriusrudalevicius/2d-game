@@ -13,9 +13,10 @@ export class Engine {
     private _net: NetworkService;
     private offline = true;
 
-    constructor(renderer: Renderer, input: InputManager) {
+    constructor(renderer: Renderer, input: InputManager, net:NetworkService) {
         this._renderer = renderer;
         this._inputManager = input;
+        this._net = net;
         this.constructScene();
     }
 
@@ -27,7 +28,7 @@ export class Engine {
         this.timer = new Timer();
         if (!this.offline) {
             this._net.connect();
-            // start after connection
+            // todo: start after connection
         } else {
             this.start();
         }
