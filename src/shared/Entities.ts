@@ -1,3 +1,6 @@
+import {Map} from "./map/Map";
+import {Point} from "./map/Point";
+
 enum MovementDirection {
     UP      = 0,
     DOWN,
@@ -9,33 +12,27 @@ interface Movement {
     direction: MovementDirection
 }
 
-interface Position {
-    x: number;
-    y: number;
-}
-
 interface GameState {
-    map:Array<Array<number>>;
-    players:Array<Player>;
-    bombs:Array<Bomb>;
+    map: Map;
+    players: Array<Player>;
+    bombs: Array<Bomb>;
 }
 
 interface Player {
     clientID: string;
     name: string;
-    position:Position;
+    position: Point;
     kills: number;
     suicides: number;
 }
 
 interface Bomb {
     timestamp: number;
-    position: Position;
+    position: Point;
 }
 
 export {
     Movement,
-    Position,
     GameState,
     Player,
     Bomb

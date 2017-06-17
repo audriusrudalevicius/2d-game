@@ -50,6 +50,8 @@ class Server {
         connectionTimestamp: new Date().getTime()
       };
 
+      this.gameState.addPlayer(this.clients[socket.id]);
+
       socket.broadcast.emit(
         SocketEvents.Event,
         serverPlayerConnected({ playerID: this.clients[socket.id].clientID })
