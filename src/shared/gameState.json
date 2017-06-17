@@ -1,0 +1,24 @@
+{
+  "map" : [],
+  "players": [
+    {
+      "id": "1",
+      "name": "player1",
+      "position": {
+        "x": 1.5,
+        "y": 1.0
+      },
+      "errors": 0,
+      "kills": 0,
+      "suicides": 0,
+      "power": 1
+    }
+  ],
+  "bombs": [{
+    "placed": 1234,
+    "position": {
+      "x": 1.5,
+      "y": 1.0
+    }
+  }]
+}
