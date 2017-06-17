@@ -8,33 +8,57 @@ const KEY = {
 };
 
 class Engine {
-    private canvas: HTMLCanvasElement;
-    private objects: Set<GameObject> = new Set<GameObject>();
+    private _objects: Map<string, GameObject> = new Map<string, GameObject>();
     private timer: Timer;
-    private renderer: Renderer;
-    private inputManager: InputManager;
+    private _renderer: Renderer;
+    private _inputManager: InputManager;
 
-    constructor(canvas: HTMLCanvasElement) {
-        this.canvas = canvas;
-        this.renderer = new Renderer(canvas.getContext('2d'));
-        this.inputManager = new InputManager();
+    constructor(renderer: Renderer, input: InputManager) {
+        this._renderer = renderer;
+        this._inputManager = input;
+        this.constructScene();
+    }
+
+    constructScene():void {
+        this._objects.set("myPlayer", new Player());
     }
 
     start() {
         this.timer = new Timer();
-        this.renderer.init();
-        this.inputManager.bind(window.document, this.canvas);
+        this.buildScene();
+        this._renderer.init();
+        this._inputManager.bind();
         this.update(0);
         this.render(0);
         requestAnimationFrame(() => this.frame());
     }
 
-    private update(delta: number): void {
+    get objects(): Map<string, GameObject> {
+        return this._objects;
+    }
 
+    get renderer(): Renderer {
+        return this._renderer;
+    }
+
+    get inputManager(): InputManager {
+        return this._inputManager;
+    }
+
+    private buildScene(): void {
+        this._objects.forEach(gameObject => gameObject.init(this));
+    }
+
+    private update(delta: number): void {
+        this._objects.forEach((gameObject) => {
+            gameObject.update(delta)
+        });
     }
 
     private render(delta: number): void {
-
+        this._objects.forEach((gameObject) => {
+            gameObject.render(delta)
+        });
     }
 
     private frame(): void {
@@ -48,15 +72,17 @@ class Engine {
 }
 
 class Renderer {
-    private context: CanvasRenderingContext2D;
+    private _context: CanvasRenderingContext2D;
 
     constructor(context: CanvasRenderingContext2D) {
-        this.context = context;
+        this._context = context;
     }
 
     public init() {
-        this.context.fillStyle = '#ffca77';
-        this.context.strokeStyle = '#000000';
+    }
+
+    get context(): CanvasRenderingContext2D {
+        return this._context;
     }
 }
 
@@ -81,11 +107,17 @@ class Timer {
 }
 
 class InputManager {
+    private canvas: HTMLCanvasElement;
+
     movingUp: boolean;
     movingDown: boolean;
     movingLeft: boolean;
     movingRight: boolean;
     placeingBomb: boolean;
+
+    constructor(canvas: HTMLCanvasElement) {
+        this.canvas = canvas;
+    }
 
     private downListener = function (e: KeyboardEvent) {
         this.onKey(e.keyCode, true);
@@ -94,7 +126,7 @@ class InputManager {
         this.onKey(e.keyCode, true);
     };
 
-    bind(doc: HTMLDocument, canvas: HTMLCanvasElement) {
+    bind() {
         document.addEventListener('keydown', this.downListener);
         document.addEventListener('keyup', this.upListener);
     }
@@ -117,6 +149,28 @@ class InputManager {
 }
 
 interface GameObject {
+    init(engine:Engine):void;
     update(delta: number): void;
     render(delta: number): void;
+}
+
+
+class Player implements GameObject {
+    private x:number = 0;
+    private y:number = 0;
+    private context:CanvasRenderingContext2D;
+
+    init(engine:Engine):void {
+        this.context = engine.renderer.context;
+    }
+
+    update(delta:number):void {
+
+    }
+    render(delta:number):void {
+        this.context.fillStyle = "#000000";
+        this.context.beginPath();
+        this.context.moveTo(this.x, this.y + 5);
+        this.context.stroke();
+    }
 }
