@@ -1,5 +1,5 @@
 import { BLOCK_TYPE } from "../BlockType";
-import {Point} from "./Point";
+import {Position} from "./Position";
 
 export class Map {
     private rows: number;
@@ -26,8 +26,8 @@ export class Map {
         return gameMap;
     }
 
-    setTile(point: Point, blockType: number) {
-        this.map[point.y][point.x] = blockType;
+    setTile(position: Position, blockType: number) {
+        this.map[position.y][position.x] = blockType;
     }
 
     getMap() {

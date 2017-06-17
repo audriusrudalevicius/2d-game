@@ -1,5 +1,5 @@
 import {Map} from "./map/Map";
-import {Point} from "./map/Point";
+import {Position} from "./map/Position";
 
 enum MovementDirection {
     UP      = 0,
@@ -21,14 +21,14 @@ interface GameState {
 interface Player {
     clientID: string;
     name: string;
-    position: Point;
+    position: Position;
     kills: number;
     suicides: number;
 }
 
 interface Bomb {
     timestamp: number;
-    position: Point;
+    position: Position;
 }
 
 export {
