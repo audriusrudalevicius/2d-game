@@ -1,5 +1,12 @@
-interface Move {
+enum MovementDirection {
+    UP      = 0,
+    DOWN,
+    LEFT,
+    RIGHT
+}
 
+interface Movement {
+    direction: MovementDirection
 }
 
 interface Position {
@@ -25,3 +32,11 @@ interface Bomb {
     timestamp: number;
     position: Position;
 }
+
+export {
+    Movement,
+    Position,
+    GameState,
+    Player,
+    Bomb
+};

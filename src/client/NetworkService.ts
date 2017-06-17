@@ -6,7 +6,7 @@ import {
 } from '../shared/logic/Events';
 
 import {
-  ConnectionEstablishedPayload
+  ServerConnectionEstablishedPayload
 } from '../shared/logic/Payloads';
 
 import Connection from '../shared/ConnectionInfo';
@@ -47,7 +47,7 @@ class NetworkService {
     this.socket.on(SocketEvents.Event, (event: Event<any>) => {
       switch (event.type) {
         case EventTypes.SERVER_CONNECTION_ESTABLISHED:
-          let payload = event.payload as ConnectionEstablishedPayload;
+          let payload = event.payload as ServerConnectionEstablishedPayload;
           this._connectionInfo = payload.connectionInfo;
       }
     })

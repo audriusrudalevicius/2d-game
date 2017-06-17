@@ -8,9 +8,9 @@ import {
   Event,
   EventTypes,
 
-  playerConnected,
-  playerDisconnected,
-  connectionEstablished
+  serverPlayerConnected,
+  serverPlayerDisconnected,
+  serverConnectionEstablished
 } from '../shared/logic/Events';
 import {GameState} from "./GameState";
 
@@ -48,12 +48,12 @@ class Server {
 
       socket.broadcast.emit(
         SocketEvents.Event,
-        playerConnected({ clientID: this.clients[socket.id].clientID })
+        serverPlayerConnected({ playerID: this.clients[socket.id].clientID })
       );
 
       socket.emit(
         SocketEvents.Event,
-        connectionEstablished({
+        serverConnectionEstablished({
           connectionInfo: this.clients[socket.id],
           state: this.gameState.getState()
         })
@@ -68,7 +68,7 @@ class Server {
       });
 
       socket.on(SocketEvents.Disconnect, () => {
-        this.io.emit('event', playerDisconnected({ clientID: this.clients[socket.id].clientID }));
+        this.io.emit('event', serverPlayerDisconnected({ playerID: this.clients[socket.id].clientID }));
         delete this.clients[socket.id];
       });
     });
