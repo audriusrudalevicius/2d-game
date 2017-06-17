@@ -5,8 +5,7 @@ import {MapGenerator} from "../../src/shared/map/MapGenerator";
 describe('SmokeTest', function () {
     it('works', function () {
         let mapGenerator = new MapGenerator();
-        mapGenerator.generate(11, 15);
-        let map = mapGenerator.getMap();
+        let map = mapGenerator.generate(11, 15);
 
         return 1 + 1 === 2
     })

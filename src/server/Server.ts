@@ -1,35 +1,32 @@
 import * as http from 'http';
 import * as SocketIO from 'socket.io';
 
-import { 
+import Connection from '../shared/ConnectionInfo';
+import SocketEvents from '../shared/SocketEvents';
+
+import {
   Event,
   EventTypes,
 
   playerConnected,
-  playerDisconnected
+  playerDisconnected,
+  connectionEstablished
 } from '../shared/logic/Events';
-
-const SocketEvents = {
-  Connection: 'connection',
-  Event: 'event',
-  Disconnect: 'disconnect'
-};
-
-interface Connection {
-  clientID: string,
-  connectionTimestamp: number
-}
+import {GameState} from "./GameState";
 
 class Server {
   public static PORT: number = 3000;
 
   private io: SocketIO.Server;
   private httpServer: http.Server;
-  private clients: { [key: string]: Connection }
+  private clients: { [key: string]: Connection };
+  private gameState: GameState;
 
-  constructor() {
+  constructor(gameState: GameState) {
     this.httpServer = http.createServer();
     this.io = this.init(this.httpServer);
+
+    this.gameState = gameState;
 
     this.clients = {};
   }
@@ -47,10 +44,21 @@ class Server {
       this.clients[socket.id] = {
         clientID: socket.id,
         connectionTimestamp: new Date().getTime()
-      }
+      };
 
-      socket.broadcast.emit('event', playerConnected({ clientID: this.clients[socket.id].clientID }));
-      socket.emit('connected', this.clients[socket.id]);
+      socket.broadcast.emit(
+        SocketEvents.Event,
+        playerConnected({ clientID: this.clients[socket.id].clientID })
+      );
+
+      socket.emit(
+        SocketEvents.Event,
+        connectionEstablished({
+          connectionInfo: this.clients[socket.id],
+          state: this.gameState.getState()
+        })
+      );
+
       console.log(`Server received client connection with id: ${ socket.id }`);
 
       socket.on(SocketEvents.Event, (event: Event<any>) => {
@@ -68,4 +76,3 @@ class Server {
 }
 
 export default Server;
-
