@@ -37,12 +37,4 @@ export class GameState implements GameStateInterface {
     public addPlayer(player: any) {
         this.players.push(player);
     }
-
-    private getStartPosition() {
-
-    }
-
-    private getRandomNumber():number {
-        return
-    }
 }

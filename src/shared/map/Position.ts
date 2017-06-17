@@ -1,4 +1,6 @@
-export class Position {
+import {Position as PositionInterface} from "../Entities";
+
+export class Position implements PositionInterface {
     public x: number;
     public y: number;
 
