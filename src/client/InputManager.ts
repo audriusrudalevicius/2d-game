@@ -13,10 +13,10 @@ export class InputManager {
         this.canvas = canvas;
     }
 
-    private downListener = function (e: KeyboardEvent) {
+    private downListener =  (e: KeyboardEvent) => {
         this.onKey(e.keyCode, true);
     };
-    private upListener = function (e: KeyboardEvent) {
+    private upListener = (e: KeyboardEvent) => {
         this.onKey(e.keyCode, true);
     };
 

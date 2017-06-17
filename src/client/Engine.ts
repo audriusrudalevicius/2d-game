@@ -61,9 +61,11 @@ export class Engine {
     private frame(): void {
         this.timer.start();
         while (this.timer.delta > this.timer.rate) {
+            this.timer.tick();
             this.update(this.timer.delta);
         }
         this.render(this.timer.delta);
         this.timer.end();
+        requestAnimationFrame(() => this.frame());
     }
 }

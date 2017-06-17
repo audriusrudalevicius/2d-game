@@ -13,6 +13,10 @@ export class Timer {
         this.delta = Math.min(1, (this.now - this.last) / 1000);
     }
 
+    public tick() {
+        this.delta= this.delta - this.rate;
+    }
+
     public end() {
         this.last = this.now;
     }
