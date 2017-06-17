@@ -1,5 +1,5 @@
-import {Engine} from "./Engine";
-import {GameObject} from "./GameObject";
+import {Engine} from "../Engine";
+import {GameObject} from "../GameObject";
 
 export class Player implements GameObject {
     private x:number = 50;
