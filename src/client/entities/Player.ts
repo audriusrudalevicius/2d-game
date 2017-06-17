@@ -2,7 +2,7 @@ import {Engine} from "../Engine";
 import {GameObject} from "../GameObject";
 
 export class Player implements GameObject {
-    private x:number = 50;
+    private x:number = 20;
     private y:number = 0;
     private context:CanvasRenderingContext2D;
 
@@ -16,7 +16,7 @@ export class Player implements GameObject {
     render(delta:number):void {
         this.context.fillStyle = "#000000";
         this.context.beginPath();
-        this.context.arc(this.x, this.y + 50, 50, 0, 2 * Math.PI);
+        this.context.arc(this.x, this.y + 20, 20, 0, 2 * Math.PI);
         this.context.fill();
         this.context.closePath();
         this.context.stroke();

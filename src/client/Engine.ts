@@ -3,7 +3,8 @@ import {Renderer} from "./Renderer";
 import {InputManager} from "./InputManager";
 import {Player} from "./entities/Player";
 import {GameObject} from "./GameObject";
-import {Grid} from "./Grid";
+import {Grid} from "./entities/Grid";
+import {Block} from "./entities/Block";
 import NetworkService, {getNetworkService} from "./NetworkService";
 
 export class Engine {
@@ -24,6 +25,7 @@ export class Engine {
     constructScene():void {
         this._objects.set("myPlayer", new Player());
         this._objects.set("myGrid", new Grid());
+        this._objects.set("myBlock", new Block());
     }
 
     run() {
