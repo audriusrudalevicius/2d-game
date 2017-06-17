@@ -1,44 +1,29 @@
-import {Map} from "./map/Map";
+import {Direction} from "./Direction";
 
-enum MovementDirection {
-    UP      = 0,
-    DOWN,
-    LEFT,
-    RIGHT
+export interface MovementInterface {
+    direction: Direction
 }
 
-interface Position {
+export interface PositionInterface {
     x: number;
     y: number;
 }
 
-interface Movement {
-    direction: MovementDirection
+export interface GameStateInterface {
+    map: Array<Array<number>>;
+    players:Array<PlayerInterface>;
+    bombs:Array<BombInterface>;
 }
 
-interface GameState {
-    map: Map;
-    players: Array<Player>;
-    bombs: Array<Bomb>;
-}
-
-interface Player {
+export interface PlayerInterface {
     clientID: string;
     name: string;
-    position: Position;
+    position:PositionInterface;
     kills: number;
     suicides: number;
 }
 
-interface Bomb {
+export interface BombInterface {
     timestamp: number;
-    position: Position;
+    position: PositionInterface;
 }
-
-export {
-    Position,
-    Movement,
-    GameState,
-    Player,
-    Bomb
-};

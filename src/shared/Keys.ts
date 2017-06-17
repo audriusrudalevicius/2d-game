@@ -6,3 +6,5 @@ export const KEY = {
     SPACE: 32,
     ESC: 27
 };
+
+export const MOVEMENT_KEYS = [KEY.LEFT, KEY.RIGHT, KEY.UP, KEY.DOWN];

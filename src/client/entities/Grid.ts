@@ -3,13 +3,14 @@ import {GameObject} from "../GameObject";
 import {BLOCK_SIZE_H, BLOCK_SIZE_W} from "../Constants";
 
 export class Grid implements GameObject {
-    private dx:number = BLOCK_SIZE_H;
-    private dy:number = BLOCK_SIZE_W;
-    private x:number = 0;
-    private y:number = 0;
-    private w:number = 1000;
-    private h:number = 1000;
-    private xy:number = 20;
+    private lineWidth = 1;
+    private maxX:number = BLOCK_SIZE_W * 24;
+    private maxY:number = BLOCK_SIZE_W * 28;
+    private spaceX:number = BLOCK_SIZE_W;
+    private spaceY:number = BLOCK_SIZE_H;
+    private startX = 1;
+    private startY = 1;
+    private padding = 0;
     private context:CanvasRenderingContext2D;
 
     init(engine:Engine):void {
@@ -20,27 +21,26 @@ export class Grid implements GameObject {
 
     }
     render(delta:number):void {
-        this.context.lineWidth = 1;
         this.context.beginPath();
-        while (this.y < this.h) {
-            this.y = this.y + this.dy;
-            this.context.moveTo(this.x, this.y);
-            this.context.lineTo(this.w, this.y);
-            this.context.stroke();
-
-            this.xy += 20;
+        this.context.lineWidth = this.lineWidth;
+        let border = 0;
+        let extraLen = 0;
+        if (this.lineWidth == 1) {
+            border = 0.5;
+            extraLen = 2;
         }
-
-        this.y =0;
-        this.xy =10;
-        while (this.x < this.w) {
-            this.x = this.x + this.dx;
-            this.context.moveTo(this.x, this.y);
-            this.context.lineTo(this.x,this.h);
-            this.context.stroke();
-
-            this.xy+=20;
+        let endX = this.maxX + this.padding + extraLen;
+        for (let x = this.startX; x < endX; x+= this.spaceX) {
+            this.context.moveTo(x + border + this.padding, this.startX + this.padding);
+            this.context.lineTo(x + border + this.padding, this.maxX + this.padding);
         }
+        let endY = this.maxY + this.padding + extraLen;
+        for (let y = this.startY; y < endY; y+= this.spaceY) {
+            this.context.moveTo(this.startY + this.padding, y + border + this.padding);
+            this.context.lineTo(this.maxY + this.padding, y + border + this.padding);
+        }
+        this.context.closePath();
+        this.context.stroke();
     }
 }
 

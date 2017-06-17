@@ -38,7 +38,7 @@ export class Map {
         const row = this.getRandomNumber(this.rows);
         const col = this.getRandomNumber(this.cols);
 
-        return this.map.isEmpty(new Position(row,col)) ? new Position(row,col) : this.getRandomEmptyPosition();
+        return this.isEmpty(new Position(row,col)) ? new Position(row,col) : this.getRandomEmptyPosition();
     }
 
     isEmpty(position: Position) {

@@ -1,43 +1,74 @@
 import {KEY} from "../shared/Keys";
+import {Callback} from "awesome-typescript-loader/dist/paths-plugin";
+
+export interface InputListener {
+    (): void;
+}
 
 export class InputManager {
-    private canvas: HTMLCanvasElement;
-
+    listeners:Map<number, Array<Callback>> = new Map<number, Array<Callback>>();
     movingUp: boolean;
     movingDown: boolean;
     movingLeft: boolean;
     movingRight: boolean;
-    placeingBomb: boolean;
+    placingBomb: boolean;
 
-    constructor(canvas: HTMLCanvasElement) {
-        this.canvas = canvas;
+    constructor(private canvas: HTMLCanvasElement, private document:Document) {
     }
 
     private downListener =  (e: KeyboardEvent) => {
         this.onKey(e.keyCode, true);
     };
     private upListener = (e: KeyboardEvent) => {
-        this.onKey(e.keyCode, true);
+        this.onKey(e.keyCode, false);
     };
 
+    addListener(key:number, listener:InputListener)
+    {
+        let listeners = this.listeners.get(key);
+        if (!listeners) {
+            listeners = [];
+            this.listeners.set(key, listeners);
+        }
+        listeners.push(listener);
+    }
+
+    removeAllListeners()
+    {
+        this.listeners = new Map<number, Array<InputListener>>();
+    }
+
     bind() {
-        document.addEventListener('keydown', this.downListener);
-        document.addEventListener('keyup', this.upListener);
+        this.document.addEventListener('keydown', this.downListener);
+        this.document.addEventListener('keyup', this.upListener);
     }
 
     unbind() {
-        document.removeEventListener('keydown', this.downListener);
-        document.removeEventListener('keyup', this.upListener);
+        this.document.removeEventListener('keydown', this.downListener);
+        this.document.removeEventListener('keyup', this.upListener);
     }
 
     onKey(keycode: number, down: boolean) {
         switch (keycode) {
+            case KEY.SPACE:
+                this.placingBomb = down;
+                break;
+            case KEY.UP:
+                this.movingUp = down;
+                break;
+            case KEY.DOWN:
+                this.movingDown = down;
+                break;
             case KEY.RIGHT:
                 this.movingRight = down;
-                return;
+                break;
             case KEY.LEFT:
                 this.movingLeft = down;
-                return;
+                break;
+        }
+        let listeners = this.listeners.get(keycode);
+        if (listeners) {
+            listeners.forEach(l => l());
         }
     }
 }

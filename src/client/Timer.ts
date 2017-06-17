@@ -5,7 +5,7 @@ export class Timer {
     public readonly rate = 1 / 60;
 
     private timestamp(): number {
-        return window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
+        return typeof window != "undefined" && window.performance && window.performance.now ? window.performance.now() : new Date().getTime();
     }
 
     public start() {

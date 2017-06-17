@@ -1,5 +1,6 @@
-import Connection from '../ConnectionInfo';
-import { Position, Movement } from '../Entities';
+import Connection from "../ConnectionInfo";
+import {MovementInterface, PositionInterface} from "../Entities";
+import {Direction} from "../Direction";
 
 interface ServerConnectionEstablishedPayload {
     connectionInfo: Connection,
@@ -13,21 +14,22 @@ interface ServerPlayerConnectedPayload {
     playerID: string
 }
 
-interface ServerPlayerMovedPayload {
+interface ServerPlayerMovingPayload {
     playerID: string,
-    position: Position;
+    origin: PositionInterface;
+    direction: Direction;
 }
 
 interface ClientMovePayload {
     clientID: string,
-    position: Position,
-    movement: Movement
+    position: PositionInterface,
+    movement: MovementInterface
 }
 
 export {
     ServerConnectionEstablishedPayload,
     ServerPlayerConnectedPayload,
-    ServerPlayerMovedPayload,
+    ServerPlayerMovingPayload,
 
     ClientMovePayload
 };

@@ -1,58 +1,45 @@
-import * as SocketIOClient from 'socket.io-client';
-
-import {
-  Event,
-  EventTypes
-} from '../shared/logic/Events';
-
-import {
-  ServerConnectionEstablishedPayload
-} from '../shared/logic/Payloads';
-
-import Connection from '../shared/ConnectionInfo';
-import SocketEvents from '../shared/SocketEvents';
+import * as SocketIOClient from "socket.io-client";
+import {Event, EventTypes} from "../shared/logic/Events";
+import {ServerConnectionEstablishedPayload} from "../shared/logic/Payloads";
+import Connection from "../shared/ConnectionInfo";
+import SocketEvents from "../shared/SocketEvents";
+import {Observable} from "rxjs/Observable";
 
 class NetworkService {
-  private static _instance: NetworkService;
-  public static getInstance() {
-    if (this._instance === null || this._instance === undefined) {
-      this._instance = new NetworkService();
+    private socket: SocketIOClient.Socket;
+    private _observable: Observable<Event<any>>;
+    private _connectionInfo: Connection;
+
+    get connectionInfo(): Connection {
+        return this._connectionInfo;
     }
 
-    return this._instance;
-  }
+    public connect(): Observable<Event<any>> {
+        this._observable = new Observable((observer) => {
+            this.socket = SocketIOClient('http://localhost:3000');
+            this.socket.on(SocketEvents.Event, (event: Event<any>) => {
+                switch (event.type) {
+                    case EventTypes.SERVER_CONNECTION_ESTABLISHED:
+                        let payload = event.payload as ServerConnectionEstablishedPayload;
+                        this._connectionInfo = payload.connectionInfo;
+                }
 
-  private socket: SocketIOClient.Socket;
+                observer.next(event);
+            });
+            this.socket.on(SocketEvents.Disconnect, () => {
+                observer.complete();
+            });
+            return () => {
+                this.socket.disconnect();
+            }
+        });
 
-  private _connectionInfo: Connection;
-  public getConnectionInfo() {
-    return this._connectionInfo;
-  }
+        return this._observable;
+    }
 
-  public connect() {
-    this.socket = SocketIOClient('http://localhost:3000');
-    this.socket.open();
-    this.listen();
-  }
-
-  public disconnect() {
-    this.socket.disconnect();
-  }
-
-  public send(event: Event<any>) {
-    this.socket.emit(SocketEvents.Event, event);
-  }
-
-  public listen() {
-    this.socket.on(SocketEvents.Event, (event: Event<any>) => {
-      switch (event.type) {
-        case EventTypes.SERVER_CONNECTION_ESTABLISHED:
-          let payload = event.payload as ServerConnectionEstablishedPayload;
-          this._connectionInfo = payload.connectionInfo;
-      }
-    })
-  };
+    public send(event: Event<any>) {
+        this.socket.emit(SocketEvents.Event, event);
+    }
 }
 
-export const getNetworkService = NetworkService.getInstance;
 export default NetworkService;

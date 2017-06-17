@@ -2,7 +2,7 @@ import {
     ClientMovePayload,
     ServerConnectionEstablishedPayload,
     ServerPlayerConnectedPayload,
-    ServerPlayerMovedPayload
+    ServerPlayerMovingPayload
 } from './Payloads';
 
 interface Event<T> {
@@ -15,7 +15,6 @@ const EventTypes = {
     SERVER_CONNECTION_ESTABLISHED: 'SERVER_CONNECTION_ESTABLISHED',
     SERVER_PLAYER_CONNECTED: 'SERVER_PLAYER_CONNECTED',
     SERVER_PLAYER_DISCONNECTED: 'SERVER_PLAYER_DISCONNECTED',
-
     SERVER_PLAYER_MOVED: 'SERVER_PLAYER_MOVED',
     CLIENT_MOVE: 'CLIENT_MOVE'
 };
@@ -50,7 +49,7 @@ const serverPlayerDisconnected = (payload: ServerPlayerConnectedPayload): Event<
     };
 };
 
-const serverPlayerMoved = (payload: ServerPlayerMovedPayload): Event<ServerPlayerMovedPayload> => {
+const serverPlayerMoving = (payload: ServerPlayerMovingPayload): Event<ServerPlayerMovingPayload> => {
     return {
         type: EventTypes.SERVER_PLAYER_MOVED,
         timestamp: new Date().getTime(),
@@ -78,6 +77,6 @@ export {
     serverPlayerDisconnected,
     serverConnectionEstablished,
 
-    serverPlayerMoved,
+    serverPlayerMoving,
     clientMove
 }

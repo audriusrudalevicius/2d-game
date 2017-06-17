@@ -20,6 +20,7 @@
     "@types/es6-collections": "^0.5.30",
     "@types/socket.io-client": "^1.4.29",
     "mocha-junit-reporter": "^1.13.0",
+    "rxjs": "^5.4.1",
     "socket.io": "^2.0.3",
     "socket.io-client": "^2.0.3",
     "typescript": "^2.3.4",

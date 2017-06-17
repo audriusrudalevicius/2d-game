@@ -1,5 +1,5 @@
-import * as http from 'http';
-import * as SocketIO from 'socket.io';
+import * as http from "http";
+import * as SocketIO from "socket.io";
 
 import Connection from '../shared/ConnectionInfo';
 import SocketEvents from '../shared/SocketEvents';
@@ -68,6 +68,7 @@ class Server {
       console.log(`Server received client connection with id: ${ socket.id }`);
 
       socket.on(SocketEvents.Event, (event: Event<any>) => {
+          console.log(`IN - Event ${event.type}`, event);
         switch (event.type) {
           case EventTypes.CLIENT_MOVE:
             let payload = event.payload as ClientMovePayload;

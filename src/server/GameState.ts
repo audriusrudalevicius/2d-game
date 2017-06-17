@@ -1,6 +1,6 @@
 import {MapGenerator} from "../shared/map/MapGenerator";
 import {Map} from "../shared/map/Map";
-import {GameState as GameStateInterface, Player as PlayerInterface, Bomb} from '../shared/Entities';
+import {PlayerInterface, BombInterface} from '../shared/Entities';
 import {Player} from "./entities/Player";
 
 const MAP = {
@@ -8,17 +8,11 @@ const MAP = {
     cols: 15
 };
 
-interface randomNumber {
-    x: number,
-    y: number
-}
-
-
-export class GameState implements GameStateInterface {
+export class GameState {
     private mapGenerator: MapGenerator;
     map: Map;
-    players: Array<PlayerInterface>;
-    bombs: Array<Bomb>;
+    players: Array<PlayerInterface> = [];
+    bombs: Array<BombInterface> = [];
 
     constructor(mapGenerator: MapGenerator) {
         this.mapGenerator = mapGenerator;

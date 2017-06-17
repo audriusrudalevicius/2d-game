@@ -1,13 +1,13 @@
-import {Player as PlayerInterface, Position} from "../../shared/Entities";
+import {PlayerInterface as PlayerInterface, PositionInterface} from "../../shared/Entities";
 
 export class Player implements PlayerInterface {
     clientID: string;
     name: string;
-    position: Position;
+    position: PositionInterface;
     kills: number;
     suicides: number;
 
-    constructor(playerId: string, startingPosition: Position) {
+    constructor(playerId: string, startingPosition: PositionInterface) {
         this.clientID = playerId;
         this.name = playerId;
         this.position = startingPosition;
