@@ -6,32 +6,35 @@ import {GameObject} from "./GameObject";
 import {Grid} from "./entities/Grid";
 import {GameState} from "./GameState";
 import NetworkService from "./NetworkService";
-import {EventTypes, serverPlayerMoving} from "../shared/logic/Events";
-import {KEY, MOVEMENT_KEYS} from "../shared/Keys";
+import {EventTypes, serverPlayerMoving} from "../shared/net/Events";
+import {MOVEMENT_KEYS} from "../shared/Keys";
 import {KeyToDirection} from "./Utils";
 import "rxjs/add/operator/retryWhen";
 import "rxjs/add/operator/retry";
 import "rxjs/add/operator/delay";
+import {ServerPlayerConnectedPayload, ServerConnectionEstablishedPayload} from "../shared/net/Payloads";
+import {RandomChoice} from "../shared/Math";
+import {PLAYER_COLORS} from "../shared/Colors";
 
 export const ObjectId = {
     Player: "myPlayer"
 };
 
 export class Engine {
+    private static netRetryDelay:number = 500;
+    private static keyboardInputDelay:number = 150;
     private _objects: Map<string, GameObject> = new Map<string, GameObject>();
     private timer: Timer;
     private _renderer: Renderer;
     private _inputManager: InputManager;
     private _net: NetworkService;
     private _gameState: GameState;
-    private offline = true;
-    private stated = false;
+    private offline = false;
 
     constructor(renderer: Renderer, input: InputManager, net: NetworkService) {
         this._renderer = renderer;
         this._inputManager = input;
         this._net = net;
-        this.bindListeners();
         this.constructScene();
     }
 
@@ -45,18 +48,26 @@ export class Engine {
 
         if (!this.offline) {
             this._net.connect()
-                .retryWhen((errors) => errors.delay(500))
+                .retryWhen((errors) => errors.delay(Engine.netRetryDelay))
                 .subscribe((event) => {
+                    let payload;
                     switch (event.type) {
                         case EventTypes.SERVER_CONNECTION_ESTABLISHED:
-                            this._gameState.map = event.payload.state.mapState;
-                            this._objects.set(ObjectId.Player, new Player());
+                            payload = <ServerConnectionEstablishedPayload> event.payload;
+                            let player = new Player(payload.position, RandomChoice(PLAYER_COLORS));
+                            this._gameState.map = payload.state.mapState;
+                            this._gameState.myId = payload.playerID;
+                            this._objects.set(ObjectId.Player, player);
                             this.start();
+                            break;
+                        case EventTypes.SERVER_PLAYER_CONNECTED:
+                            payload = <ServerPlayerConnectedPayload> event.payload;
+                            this._objects.set('player-' + payload.playerID, player);
                             break;
                     }
                 });
         } else {
-            this._objects.set(ObjectId.Player, new Player());
+            this._objects.set(ObjectId.Player, new Player({x: 0, y: 0}, RandomChoice(PLAYER_COLORS)));
             this.start();
         }
     }
@@ -77,11 +88,19 @@ export class Engine {
         this.buildScene();
         this._renderer.init();
         this._inputManager.bind();
+        this._inputManager.subscribe((o) =>
+            o.filter(e => MOVEMENT_KEYS.indexOf(e.keyCode) !== -1 && e.type == 'keydown')
+            .debounceTime(Engine.keyboardInputDelay)
+            .subscribe((e => {
+                this._net.send(serverPlayerMoving({
+                    playerID: this._net.connectionInfo.clientID,
+                    origin: {x: this._gameState.player.position.x, y: this._gameState.player.position.y},
+                    direction: KeyToDirection(e.keyCode)
+                }))
+            }))
+        );
         this._gameState.init(this);
-        this.update(0);
-        this.render(0);
         this._renderer.requestAnimationFrame(() => this.frame());
-        this.stated = true;
     }
 
     private buildScene(): void {
@@ -103,29 +122,12 @@ export class Engine {
 
     private frame(): void {
         this.timer.start();
-        while (this.timer.delta > this.timer.rate) {
+        while (this.timer.delta > Timer.rate) {
             this.timer.tick();
             this.update(this.timer.delta);
         }
         this.render(this.timer.delta);
         this.timer.end();
         this._renderer.requestAnimationFrame(() => this.frame());
-    }
-
-    private bindListeners() {
-        if (!this.offline) {
-            MOVEMENT_KEYS.forEach((keycode) => {
-                this.inputManager.addListener(KEY.RIGHT, () => {
-                    if (!this.stated) {
-                        return;
-                    }
-                    this._net.send(serverPlayerMoving({
-                        playerID: this._net.connectionInfo.clientID,
-                        origin: {x: this._gameState.player.x, y: this._gameState.player.y},
-                        direction: KeyToDirection(keycode)
-                    }))
-                });
-            });
-        }
     }
 }

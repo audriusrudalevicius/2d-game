@@ -1,0 +1,32 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+    ],
+    "jsRules": {},
+    "rules": {
+        "no-var-requires": true,
+        "no-namespace": [true, "allow-declarations"],
+        "promise-function-async": true,
+        "no-eval": true,
+        "no-invalid-this": true,
+        "no-var-keyword": true,
+        "no-unused-expression": true,
+        "strict-boolean-expressions": [
+            true,
+            "allow-null-union",
+            "allow-undefined-union",
+            "allow-string",
+            "allow-number"
+        ],
+        "cyclomatic-complexity": true,
+        "eofline": true,
+        "indent": [true, "spaces", 4],
+        "max-classes-per-file": [true, 1],
+        "no-require-imports": true,
+        "max-file-line-count": [true, 300],
+        "typeof-compare": true,
+        "no-duplicate-variable": true,
+        "unified-signatures": true
+    },
+    "rulesDirectory": []
+}

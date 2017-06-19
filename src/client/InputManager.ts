@@ -1,51 +1,41 @@
 import {KEY} from "../shared/Keys";
-import {Callback} from "awesome-typescript-loader/dist/paths-plugin";
-
-export interface InputListener {
-    (): void;
-}
+import * as Rx from "rxjs";
 
 export class InputManager {
-    listeners:Map<number, Array<Callback>> = new Map<number, Array<Callback>>();
     movingUp: boolean;
     movingDown: boolean;
     movingLeft: boolean;
     movingRight: boolean;
     placingBomb: boolean;
 
-    constructor(private canvas: HTMLCanvasElement, private document:Document) {
+    private actionsBound: Array<Rx.Subscription> = [];
+    private keyActions:Rx.Observable<KeyboardEvent>;
+
+    constructor(private canvas: HTMLCanvasElement, private document: Document) {
     }
 
-    private downListener =  (e: KeyboardEvent) => {
-        this.onKey(e.keyCode, true);
-    };
-    private upListener = (e: KeyboardEvent) => {
-        this.onKey(e.keyCode, false);
-    };
-
-    addListener(key:number, listener:InputListener)
-    {
-        let listeners = this.listeners.get(key);
-        if (!listeners) {
-            listeners = [];
-            this.listeners.set(key, listeners);
-        }
-        listeners.push(listener);
-    }
-
-    removeAllListeners()
-    {
-        this.listeners = new Map<number, Array<InputListener>>();
+    subscribe(callback:(o:Rx.Observable<KeyboardEvent>) => Rx.Subscription) {
+        this.actionsBound.push(callback(this.keyActions));
     }
 
     bind() {
-        this.document.addEventListener('keydown', this.downListener);
-        this.document.addEventListener('keyup', this.upListener);
+        let keyDowns = Rx.Observable.fromEvent(this.document, 'keydown');
+        let keyUps = Rx.Observable.fromEvent(this.document, 'keyup');
+        this.keyActions = Rx.Observable
+            .merge(keyDowns, keyUps)
+            .groupBy((e: KeyboardEvent) => e.keyCode)
+            .map(group => group.distinctUntilChanged(null, (e: KeyboardEvent) => e.type))
+            .mergeAll();
+
+        this.actionsBound.push(
+            this.keyActions.subscribe((e: KeyboardEvent) => {
+                this.onKey(e.keyCode, e.type === 'keyup');
+            })
+        );
     }
 
     unbind() {
-        this.document.removeEventListener('keydown', this.downListener);
-        this.document.removeEventListener('keyup', this.upListener);
+        this.actionsBound.forEach(action => action.unsubscribe());
     }
 
     onKey(keycode: number, down: boolean) {
@@ -65,10 +55,6 @@ export class InputManager {
             case KEY.LEFT:
                 this.movingLeft = down;
                 break;
-        }
-        let listeners = this.listeners.get(keycode);
-        if (listeners) {
-            listeners.forEach(l => l());
         }
     }
 }

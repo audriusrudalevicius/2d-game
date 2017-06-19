@@ -1,88 +1,124 @@
 import * as http from "http";
 import * as SocketIO from "socket.io";
+import * as express from "express";
+import * as path from "path";
 
-import Connection from '../shared/ConnectionInfo';
-import SocketEvents from '../shared/SocketEvents';
-import { GameState } from "./GameState";
-
-import {
-  Event,
-  EventTypes,
-
-  serverPlayerConnected,
-  serverPlayerDisconnected,
-  serverConnectionEstablished
-} from '../shared/logic/Events';
+import Connection from "../shared/ConnectionInfo";
+import SocketEvents from "../shared/SocketEvents";
+import {GameState} from "./GameState";
 
 import {
-  ClientMovePayload
-} from "../shared/logic/Payloads";
+    Event,
+    EventTypes,
+    serverConnectionEstablished,
+    serverPlayerConnected,
+    serverPlayerDisconnected
+} from "../shared/net/Events";
+
+import {ClientMovePayload} from "../shared/net/Payloads";
+import {Player} from "./entities/Player";
+import {SharedConfigInterface} from "../shared/Interfaces";
+import {DefaultConfig} from "../shared/Params";
 
 class Server {
-  public static PORT: number = 3000;
+    private app: express.Application = express();
+    private io: SocketIO.Server;
+    private httpServer: http.Server;
+    private clients: { [key: string]: Connection };
+    private gameState: GameState;
+    private configFileContent: string;
+    private configFile: SharedConfigInterface;
 
-  private io: SocketIO.Server;
-  private httpServer: http.Server;
-  private clients: { [key: string]: Connection };
-  private gameState: GameState;
+    constructor(gameState: GameState) {
+        this.app = express();
+        this.app.use('/assets', express.static(path.join(__dirname, 'assets')));
+        this.httpServer = http.createServer(this.app);
+        this.io = SocketIO(this.httpServer);
+        this.configFile = {
+            serverUrl: process.env.EXT_HTTP_URL || DefaultConfig.serverUrl,
+            serverPort: process.env.EXT_HTTP_PORT || DefaultConfig.serverPort
+        };
 
-  constructor(gameState: GameState) {
-    this.httpServer = http.createServer();
-    this.io = this.init(this.httpServer);
+        this.gameState = gameState;
 
-    this.gameState = gameState;
+        this.clients = {};
+    }
 
-    this.clients = {};
-  }
+    public listen(port: number = DefaultConfig.serverPort): void {
+        this.configFileContent = `var SHARED_CONFIG = ${JSON.stringify(this.configFile)};`;
 
-  public init(httpServer: http.Server): SocketIO.Server {
-    return SocketIO(httpServer);
-  }
+        this.httpServer.listen(port, () => {
+            console.log(`Server listening on port ${ port }`);
+        });
 
-  public listen(port: number = Server.PORT): void {
-    this.httpServer.listen(port, () => {
-      console.log(`Server listening on port ${ port }`);
-    });
+        this.app.get('/config.js', (req, res) => {
+            res.setHeader('content-type', 'text/javascript');
+            res.write(this.configFileContent);
+            res.end();
+        });
 
-    this.io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
-      this.clients[socket.id] = {
-        clientID: socket.id,
-        connectionTimestamp: new Date().getTime()
-      };
+        this.app.get('/', function (req, res) {
+            res.sendFile(path.join(__dirname, 'index.html'));
+        });
 
-      this.gameState.addPlayer(socket.id);
+        this.app.get('/main.bundle.js', function (req, res) {
+            res.sendFile(path.join(__dirname, 'main.bundle.js'));
+        });
 
-      socket.broadcast.emit(
-        SocketEvents.Event,
-        serverPlayerConnected({ playerID: this.clients[socket.id].clientID })
-      );
+        this.app.get('/commons.js', function (req, res) {
+            res.sendFile(path.join(__dirname, 'commons.js'));
+        });
 
-      socket.emit(
-        SocketEvents.Event,
-        serverConnectionEstablished({
-          connectionInfo: this.clients[socket.id],
-          state: this.gameState.getState()
-        })
-      );
+        this.io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
+            this.clients[socket.id] = {
+                clientID: socket.id,
+                connectionTimestamp: new Date().getTime()
+            };
+            let player: Player;
+            if (!this.gameState.findPlayer(socket.id)) {
+                player = new Player(socket.id, this.gameState.map.pickRandomFreePosition());
+                this.gameState.addPlayer(player);
+            } else {
+                player = this.gameState.findPlayer(socket.id);
+            }
 
-      console.log(`Server received client connection with id: ${ socket.id }`);
+            socket.emit(
+                SocketEvents.Event,
+                serverConnectionEstablished({
+                    connectionInfo: this.clients[socket.id],
+                    playerID: player.clientID,
+                    position: player.position,
+                    state: this.gameState.getState()
+                })
+            );
 
-      socket.on(SocketEvents.Event, (event: Event<any>) => {
-          console.log(`IN - Event ${event.type}`, event);
-        switch (event.type) {
-          case EventTypes.CLIENT_MOVE:
-            let payload = event.payload as ClientMovePayload;
-            /* Validate movement */ break;
-        }
-      });
+            socket.broadcast.emit(
+                SocketEvents.Event,
+                serverPlayerConnected({
+                    playerID: player.clientID,
+                    position: player.position
+                })
+            );
 
-      socket.on(SocketEvents.Disconnect, () => {
-        this.io.emit('event', serverPlayerDisconnected({ playerID: this.clients[socket.id].clientID }));
-        delete this.clients[socket.id];
-        this.gameState.removePlayer(socket.id);
-      });
-    });
-  }
+            console.log(`Server received client connection with id: ${ socket.id }`);
+
+            socket.on(SocketEvents.Event, (event: Event<any>) => {
+                console.log(`IN - Event ${event.type}`, event);
+                switch (event.type) {
+                    case EventTypes.CLIENT_MOVE:
+                        let payload = event.payload as ClientMovePayload;
+                        /* Validate movement */
+                        break;
+                }
+            });
+
+            socket.on(SocketEvents.Disconnect, () => {
+                this.io.emit('event', serverPlayerDisconnected({playerID: this.clients[socket.id].clientID}));
+                delete this.clients[socket.id];
+                this.gameState.removePlayer(socket.id);
+            });
+        });
+    }
 }
 
 export default Server;

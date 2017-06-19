@@ -7,6 +7,7 @@ export class GameState {
     players:Array<PlayerInterface>;
     playerController: PlayerController;
     player:Player;
+    myId:string;
 
     init(engine:Engine):void {
         this.player = <Player> engine.objects.get(ObjectId.Player);

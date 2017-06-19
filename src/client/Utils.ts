@@ -19,4 +19,4 @@ export const KeyToDirection = (keycode: number): Direction => {
         default:
             throw new Error('Invalid keycode');
     }
-}
+};

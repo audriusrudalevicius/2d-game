@@ -2,8 +2,8 @@
 
 Requirements
 ---
-* NPM Version 4.1.2
-* Node Version 7.7.4
+* NPM Version 5.0.3
+* Node Version 8.1.2
 * Chrome 58
 
 Start
@@ -12,4 +12,12 @@ Start
 npm i
 npm test
 npm start
+```
+
+Docker
+---
+
+```bash
+docker build -t d3trax/2d-game .
+docker run --rm -d -p 3000:3000 d3trax/2d-game
 ```

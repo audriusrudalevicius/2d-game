@@ -1,5 +1,5 @@
-import {MapGenerator} from "../shared/map/MapGenerator";
-import {Map} from "../shared/map/Map";
+import {MapGenerator} from "./map/MapGenerator";
+import {Map} from "./map/Map";
 import {PlayerInterface, BombInterface} from '../shared/Entities';
 import {Player} from "./entities/Player";
 
@@ -20,6 +20,7 @@ export class GameState {
 
     public start() {
         this.map = this.mapGenerator.generate(MAP.rows, MAP.cols);
+        this.map.indexFreeSpace();
     }
 
     public getState() {
@@ -29,10 +30,12 @@ export class GameState {
         }
     }
 
-    public addPlayer(playerId: string) {
-        this.players.push(
-            new Player(playerId, this.map.getRandomEmptyPosition())
-        );
+    public addPlayer(player:Player) {
+        this.players.push(player);
+    }
+
+    public findPlayer(playerId: string):Player {
+        return this.players.find((p) => p.clientID == playerId);
     }
 
     public removePlayer(playerId: string) {

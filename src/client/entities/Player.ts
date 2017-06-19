@@ -2,41 +2,29 @@ import {Engine} from "../Engine";
 import {GameObject} from "../GameObject";
 import {BLOCK_SIZE_H, BLOCK_SIZE_W, PLAYER_SIZE} from "../Constants";
 import {WorldToCanvas} from "../Utils";
-import {InputManager} from "../InputManager";
+import {PositionInterface} from "../../shared/Entities";
 
 export class Player implements GameObject {
-    private colors: Array<string> = [];
-    public x: number = 1;
-    public y: number = 1;
+    private color:string;
+    public position:PositionInterface;
     private context: CanvasRenderingContext2D;
-    private inputManager: InputManager;
+
+    constructor(position: PositionInterface, color:string) {
+        this.position = position;
+        this.color = color;
+    }
 
     init(engine: Engine): void {
         this.context = engine.renderer.context;
-        this.inputManager = engine.inputManager;
     }
 
     update(delta: number): void {
-        if (this.inputManager.movingRight) {
-            this.x += 1;
-        } else if (this.inputManager.movingUp) {
-            if (this.y == 0) {
-                return;
-            }
-            this.y -= 1;
-        } else if (this.inputManager.movingDown) {
-            this.y += 1;
-        } else if (this.inputManager.movingLeft) {
-            if (this.x == 0) {
-                return;
-            }
-            this.x -= 1;
-        }
+
     }
 
     render(delta: number): void {
-        const coords = WorldToCanvas(this.x, this.y);
-        this.context.fillStyle = "#000000";
+        const coords:PositionInterface = WorldToCanvas(this.position.x, this.position.y);
+        this.context.fillStyle = this.color;
         this.context.beginPath();
         this.context.arc(coords.x + BLOCK_SIZE_W / 2, coords.y + BLOCK_SIZE_H / 2, PLAYER_SIZE / 2, 0, 2 * Math.PI);
         this.context.fill();
@@ -44,6 +32,6 @@ export class Player implements GameObject {
         this.context.closePath();
         this.context.stroke();
 
-        this.context.fillText('x:' + this.x + ' ' + 'y:' + this.y, 10, 10);
+        this.context.fillText('x:' + this.position.x + ' ' + 'y:' + this.position.y, 10, 10);
     }
 }
