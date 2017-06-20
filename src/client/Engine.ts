@@ -12,17 +12,18 @@ import {KeyToDirection} from "./Utils";
 import "rxjs/add/operator/retryWhen";
 import "rxjs/add/operator/retry";
 import "rxjs/add/operator/delay";
-import {ServerPlayerConnectedPayload, ServerConnectionEstablishedPayload} from "../shared/net/Payloads";
+import {ServerConnectionEstablishedPayload, ServerPlayerConnectedPayload} from "../shared/net/Payloads";
 import {RandomChoice} from "../shared/Math";
 import {PLAYER_COLORS} from "../shared/Colors";
+import {GaTrack, TrackPoint} from "./GaTrack";
 
 export const ObjectId = {
     Player: "myPlayer"
 };
 
 export class Engine {
-    private static netRetryDelay:number = 500;
-    private static keyboardInputDelay:number = 150;
+    private static netRetryDelay: number = 500;
+    private static keyboardInputDelay: number = 150;
     private _objects: Map<string, GameObject> = new Map<string, GameObject>();
     private timer: Timer;
     private _renderer: Renderer;
@@ -43,6 +44,7 @@ export class Engine {
     }
 
     run() {
+        GaTrack.TrackTimeOnce(TrackPoint.JS_LOAD);
         this.timer = new Timer();
         this._gameState = new GameState();
 
@@ -85,19 +87,20 @@ export class Engine {
     }
 
     private start(): void {
+        GaTrack.TrackTimeOnce(TrackPoint.GAME_CONNECT);
         this.buildScene();
         this._renderer.init();
         this._inputManager.bind();
         this._inputManager.subscribe((o) =>
             o.filter(e => MOVEMENT_KEYS.indexOf(e.keyCode) !== -1 && e.type == 'keydown')
-            .debounceTime(Engine.keyboardInputDelay)
-            .subscribe((e => {
-                this._net.send(serverPlayerMoving({
-                    playerID: this._net.connectionInfo.clientID,
-                    origin: {x: this._gameState.player.position.x, y: this._gameState.player.position.y},
-                    direction: KeyToDirection(e.keyCode)
+                .debounceTime(Engine.keyboardInputDelay)
+                .subscribe((e => {
+                    this._net.send(serverPlayerMoving({
+                        playerID: this._net.connectionInfo.clientID,
+                        origin: {x: this._gameState.player.position.x, y: this._gameState.player.position.y},
+                        direction: KeyToDirection(e.keyCode)
+                    }))
                 }))
-            }))
         );
         this._gameState.init(this);
         this._renderer.requestAnimationFrame(() => this.frame());
