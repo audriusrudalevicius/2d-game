@@ -2,6 +2,7 @@ import * as http from "http";
 import * as SocketIO from "socket.io";
 import * as express from "express";
 import * as path from "path";
+import * as compression from "compression";
 
 import Connection from "../shared/ConnectionInfo";
 import SocketEvents from "../shared/SocketEvents";
@@ -31,7 +32,11 @@ class Server {
 
     constructor(gameState: GameState) {
         this.app = express();
+        this.app.use(compression());
         this.app.use('/assets', express.static(path.join(__dirname, 'assets')));
+        this.app.use('/main.bundle.js', express.static(path.join(__dirname, 'main.bundle.js')));
+        this.app.use('/commons.js', express.static(path.join(__dirname, 'commons.js')));
+
         this.httpServer = http.createServer(this.app);
         this.io = SocketIO(this.httpServer);
         this.configFile = {
@@ -53,20 +58,13 @@ class Server {
 
         this.app.get('/config.js', (req, res) => {
             res.setHeader('content-type', 'text/javascript');
+            res.setHeader('Cache-Control', 'no-cache');
             res.write(this.configFileContent);
             res.end();
         });
 
         this.app.get('/', function (req, res) {
             res.sendFile(path.join(__dirname, 'index.html'));
-        });
-
-        this.app.get('/main.bundle.js', function (req, res) {
-            res.sendFile(path.join(__dirname, 'main.bundle.js'));
-        });
-
-        this.app.get('/commons.js', function (req, res) {
-            res.sendFile(path.join(__dirname, 'commons.js'));
         });
 
         this.io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
