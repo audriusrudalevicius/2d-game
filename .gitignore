@@ -8,3 +8,4 @@ bomberman.io.iml
 reports/
 coverage/
 .nyc_output/
+test-results.xml

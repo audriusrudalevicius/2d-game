@@ -22,7 +22,7 @@ export class InputManager {
         let keyDowns = Rx.Observable.fromEvent(this.document, 'keydown');
         let keyUps = Rx.Observable.fromEvent(this.document, 'keyup');
         this.keyActions = Rx.Observable
-            .merge(keyDowns, keyUps)
+            .merge<KeyboardEvent>(keyDowns, keyUps)
             .groupBy((e: KeyboardEvent) => e.keyCode)
             .map(group => group.distinctUntilChanged(null, (e: KeyboardEvent) => e.type))
             .mergeAll();
