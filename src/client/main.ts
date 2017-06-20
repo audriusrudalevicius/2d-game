@@ -1,11 +1,12 @@
 import {DefaultConfig} from "../shared/Params";
-if (typeof window == "undefined") {
-    throw new Error("Run this script in browser.");
-}
 import {Engine} from "./Engine";
 import {InputManager} from "./InputManager";
 import {Renderer} from "./Renderer";
 import NetworkService from "./NetworkService";
+
+if (typeof window == "undefined") {
+    throw new Error("Run this script in browser.");
+}
 
 const BUILD_ID = window['NODE_ENV'] !== 'development' ? window['CIRCLE_BUILD_NUM'] : 'dev';
 const config = typeof window['SHARED_CONFIG'] !== 'undefined' ? window['SHARED_CONFIG'] : DefaultConfig;
@@ -16,5 +17,7 @@ const renderer = new Renderer(canvas.getContext('2d'), canvas.width, canvas.heig
 const networkService = new NetworkService(serverURL);
 const engine = new Engine(renderer, input, networkService);
 
-engine.run();
-console.log('Started! Build: ' + BUILD_ID + ' Server: ' + serverURL);
+document.addEventListener('DOMContentLoaded', () => {
+    engine.run();
+    console.log('Started! Build: ' + BUILD_ID + ' Server: ' + serverURL);
+});
