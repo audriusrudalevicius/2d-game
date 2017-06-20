@@ -10,10 +10,12 @@
     "build:prod": "npm run clean; cross-env NODE_ENV=production webpack --config webpack.config.js --optimize-minimize -p",
     "lint": "tslint --type-check --project tsconfig.json src/**/*.ts",
     "test": "npm run test:mocha",
+    "test:unit": "npm run build:unit-test; ava",
     "test:karma": "karma start karma.config.js",
     "test:mocha": "mocha --compilers ts:ts-node/register test/ --recursive",
     "test:mocha.ci": "mocha --compilers ts:ts-node/register test/ --recursive --reporter mocha-junit-reporter",
-    "test:coverage": "nyc npm run test:mocha.ci"
+    "test:coverage": "nyc npm run test:mocha.ci",
+    "build:unit-test": "npm run clean; tsc"
   },
   "author": "d3trax",
   "license": "MIT",
@@ -33,8 +35,15 @@
     "node": ">= 7.7.4"
   },
   "ava": {
-    "require": "ts-node/register",
-    "files": "tests/**/*.ts"
+    "files": [
+      "test/**/*.ts",
+      "dist/test/**/*.ava.spec.js"
+    ],
+    "tap": false,
+    "require": [
+      "ts-node/register"
+    ],
+    "failFast": true
   },
   "nyc": {
     "include": [
