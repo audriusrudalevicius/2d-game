@@ -30,7 +30,7 @@ jobs:
           name: code-coverage
           command: './node_modules/.bin/nyc npm run test:mocha.ci'
           environment:
-            MOCHA_FILE: ./reports/junit/test-results.xml
+            MOCHA_FILE: /tmp/test-results/test-results.xml
       - run:
           name: build
           command: 'npm run build:prod'
