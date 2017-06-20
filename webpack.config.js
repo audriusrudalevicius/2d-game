@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const fs = require('fs');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const CLIENT_ROOT = path.resolve(__dirname, 'src/client');
 const SERVER_ROOT = path.resolve(__dirname, 'src/server');
@@ -98,13 +97,7 @@ const webPluginsProd = [
         hash: true,
         title: 'Bomba'
     }),
-    new UglifyJSPlugin({
-        sourceMap: false,
-        compress: {
-            warnings: false,
-            screw_ie8: true
-        }
-    })
+    new webpack.optimize.UglifyJsPlugin()
 ];
 
 module.exports = [

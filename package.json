@@ -7,7 +7,7 @@
     "clean": "rimraf dist",
     "start": "webpack-dev-server --progress --profile --colors",
     "build": "npm run clean; webpack --config webpack.config.js",
-    "build:prod": "npm run clean; cross-env NODE_ENV=prod webpack --config webpack.config.js -p",
+    "build:prod": "npm run clean; cross-env NODE_ENV=prod webpack --config webpack.config.js --optimize-minimize -p",
     "lint": "tslint --type-check --project tsconfig.json src/**/*.ts",
     "test": "npm run test:mocha.ci",
     "test:karma": "karma start karma.config.js",
@@ -83,7 +83,6 @@
     "tslint": "^5.4.3",
     "tslint-junit-formatter": "^5.0.0",
     "tslint-loader": "^3.5.3",
-    "uglifyjs-webpack-plugin": "^0.4.4",
     "webpack-dev-server": "^2.4.5"
   }
 }
