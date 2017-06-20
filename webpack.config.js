@@ -72,9 +72,14 @@ const webPluginsProd = [
     new HtmlWebpackPlugin({
         filename: "index.html",
         template: CLIENT_ROOT + '/index.ejs',
-        inject: true,
+        inject: false,
         minify: {
-            html5: true
+            html5: true,
+            removeTagWhitespace: true,
+            collapseWhitespace: true,
+            minifyJS: true,
+            removeEmptyAttributes: true,
+            useShortDoctype: true
         },
         googleAnalytics: {
             trackingId: 'UA-15104439-7',
