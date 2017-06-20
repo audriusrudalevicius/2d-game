@@ -3,11 +3,9 @@ import * as SocketIO from "socket.io";
 import * as express from "express";
 import * as path from "path";
 import * as compression from "compression";
-
 import Connection from "../shared/ConnectionInfo";
 import SocketEvents from "../shared/SocketEvents";
 import {GameState} from "./GameState";
-
 import {
     Event,
     EventTypes,
@@ -15,17 +13,18 @@ import {
     serverPlayerConnected,
     serverPlayerDisconnected
 } from "../shared/net/Events";
-
 import {ClientMovePayload} from "../shared/net/Payloads";
 import {Player} from "./entities/Player";
 import {SharedConfigInterface} from "../shared/Interfaces";
 import {DefaultConfig} from "../shared/Params";
 
+const CACHE_LIFE_TIME = 533280;
+
 class Server {
     private app: express.Application = express();
     private io: SocketIO.Server;
     private httpServer: http.Server;
-    private clients: { [key: string]: Connection };
+    private clients: {[key: string]: Connection};
     private gameState: GameState;
     private configFileContent: string;
     private configFile: SharedConfigInterface;
@@ -33,9 +32,9 @@ class Server {
     constructor(gameState: GameState) {
         this.app = express();
         this.app.use(compression());
-        this.app.use('/assets', express.static(path.join(__dirname, 'assets')));
-        this.app.use('/main.bundle.js', express.static(path.join(__dirname, 'main.bundle.js')));
-        this.app.use('/commons.js', express.static(path.join(__dirname, 'commons.js')));
+        this.app.use('/assets', express.static(path.join(__dirname, 'assets'), {maxAge: CACHE_LIFE_TIME}));
+        this.app.use('/main.bundle.js', express.static(path.join(__dirname, 'main.bundle.js'), {maxAge: CACHE_LIFE_TIME}));
+        this.app.use('/commons.js', express.static(path.join(__dirname, 'commons.js'), {maxAge: CACHE_LIFE_TIME}));
 
         this.httpServer = http.createServer(this.app);
         this.io = SocketIO(this.httpServer);
