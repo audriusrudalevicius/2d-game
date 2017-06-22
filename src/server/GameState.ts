@@ -25,8 +25,9 @@ export class GameState {
 
     public getState() {
         return {
-            mapState: this.map.getMap(),
-            gameState: {}
+            map: this.map.getMap(),
+            players: this.players,
+            bombs: this.bombs
         }
     }
 
@@ -35,10 +36,10 @@ export class GameState {
     }
 
     public findPlayer(playerId: string):Player {
-        return this.players.find((p) => p.clientID == playerId);
+        return this.players.find((p) => p.playerID == playerId);
     }
 
     public removePlayer(playerId: string) {
-        this.players  = this.players.filter(player => player.clientID !== playerId);
+        this.players  = this.players.filter(player => player.playerID !== playerId);
     }
 }

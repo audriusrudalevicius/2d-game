@@ -61,9 +61,8 @@ const webPluginsDev = [
     new HtmlWebpackPlugin({
         filename: "index.html",
         template: CLIENT_ROOT + '/index.ejs',
-        inject: true,
+        inject: false,
         chunksSortMode: "dependency",
-        hash: true,
         title: 'Development'
     })
 ];

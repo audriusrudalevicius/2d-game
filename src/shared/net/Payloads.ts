@@ -1,30 +1,34 @@
 import Connection from "../ConnectionInfo";
-import {MovementInterface, PositionInterface} from "../Entities";
+import {BombInterface, MovementInterface, PlayerInterface, PositionInterface} from "../Entities";
 import {Direction} from "../Direction";
+
+export interface Player {
+    playerID: string,
+    position: PositionInterface
+}
 
 export interface ServerConnectionEstablishedPayload {
     connectionInfo: Connection,
     playerID: string,
-    position: PositionInterface;
-    state: {
-        mapState: number[][],
-        gameState: any
-    }
+    position: PositionInterface,
+    map: number[][],
+    players:Array<PlayerInterface>;
+    bombs:Array<BombInterface>;
 }
 
 export interface ServerPlayerDisconnectedPayload {
-    playerID: string;
+    playerID: string
 }
 
 export interface ServerPlayerConnectedPayload {
-    playerID: string;
-    position: PositionInterface;
+    playerID: string,
+    position: PositionInterface
 }
 
 export interface ServerPlayerMovingPayload {
-    playerID: string;
-    origin: PositionInterface;
-    direction: Direction;
+    playerID: string,
+    origin: PositionInterface,
+    direction: Direction
 }
 
 export interface ClientMovePayload {

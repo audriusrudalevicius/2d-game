@@ -2,17 +2,21 @@ import {
     ClientMovePayload,
     ServerConnectionEstablishedPayload,
     ServerPlayerConnectedPayload,
-    ServerPlayerMovingPayload,
-    ServerPlayerDisconnectedPayload
-} from './Payloads';
+    ServerPlayerDisconnectedPayload,
+    ServerPlayerMovingPayload
+} from "./Payloads";
 
-interface Event<T> {
-    type: string,
+export interface NetworkEvent<T, P> {
+    type: T,
     timestamp: number
-    payload?: T
+    payload?: P
 }
 
-const EventTypes = {
+export function CreateEvent<T extends string, P>(type: T, payload: P): NetworkEvent<T, P> {
+    return {type, payload, timestamp: new Date().getTime()};
+}
+
+export const EventTypes = {
     SERVER_CONNECTION_ESTABLISHED: 'SERVER_CONNECTION_ESTABLISHED',
     SERVER_PLAYER_CONNECTED: 'SERVER_PLAYER_CONNECTED',
     SERVER_PLAYER_DISCONNECTED: 'SERVER_PLAYER_DISCONNECTED',
@@ -20,64 +24,27 @@ const EventTypes = {
     CLIENT_MOVE: 'CLIENT_MOVE'
 };
 
-const serverConnectionEstablished = (payload: ServerConnectionEstablishedPayload): Event<ServerConnectionEstablishedPayload> => {
-    return {
-        type: EventTypes.SERVER_CONNECTION_ESTABLISHED,
-        timestamp: new Date().getTime(),
-        payload: {
-            ...payload
-        }
-    }
+export type ConnectedToServerAction = NetworkEvent<typeof EventTypes.SERVER_CONNECTION_ESTABLISHED, ServerConnectionEstablishedPayload>;
+export type PlayerJoinsAction = NetworkEvent<typeof EventTypes.SERVER_PLAYER_CONNECTED, ServerPlayerConnectedPayload>;
+export type PlayerMovingAction = NetworkEvent<typeof EventTypes.SERVER_PLAYER_MOVED, ClientMovePayload>;
+export type PlayerMovedAction = NetworkEvent<typeof EventTypes.SERVER_PLAYER_MOVED, ServerPlayerMovingPayload>;
+
+export const serverConnectionEstablished = (payload: ServerConnectionEstablishedPayload): NetworkEvent<typeof EventTypes.SERVER_CONNECTION_ESTABLISHED, ServerConnectionEstablishedPayload> => {
+    return CreateEvent(EventTypes.SERVER_CONNECTION_ESTABLISHED, payload);
 };
 
-const serverPlayerConnected = (payload: ServerPlayerConnectedPayload): Event<ServerPlayerConnectedPayload> => {
-    return {
-        type: EventTypes.SERVER_PLAYER_CONNECTED,
-        timestamp: new Date().getTime(),
-        payload: {
-            ...payload
-        }
-    };
+export const serverPlayerConnected = (payload: ServerPlayerConnectedPayload): NetworkEvent<typeof EventTypes.SERVER_PLAYER_CONNECTED, ServerPlayerConnectedPayload> => {
+    return CreateEvent(EventTypes.SERVER_PLAYER_CONNECTED, payload);
 };
 
-const serverPlayerDisconnected = (payload: ServerPlayerDisconnectedPayload): Event<ServerPlayerDisconnectedPayload> => {
-    return {
-        type: EventTypes.SERVER_PLAYER_DISCONNECTED,
-        timestamp: new Date().getTime(),
-        payload: {
-            ...payload
-        }
-    };
+export const serverPlayerDisconnected = (payload: ServerPlayerDisconnectedPayload): NetworkEvent<typeof EventTypes.SERVER_PLAYER_CONNECTED, ServerPlayerDisconnectedPayload> => {
+    return CreateEvent(EventTypes.SERVER_PLAYER_CONNECTED, payload);
 };
 
-const serverPlayerMoving = (payload: ServerPlayerMovingPayload): Event<ServerPlayerMovingPayload> => {
-    return {
-        type: EventTypes.SERVER_PLAYER_MOVED,
-        timestamp: new Date().getTime(),
-        payload: {
-            ...payload
-        }
-    }
+export const clientPlayerMoving = (payload: ServerPlayerMovingPayload): NetworkEvent<typeof EventTypes.SERVER_PLAYER_MOVED, ServerPlayerMovingPayload> => {
+    return CreateEvent(EventTypes.SERVER_PLAYER_MOVED, payload);
 };
 
-const clientMove = (payload: ClientMovePayload): Event<ClientMovePayload> => {
-    return {
-        type: EventTypes.CLIENT_MOVE,
-        timestamp: new Date().getTime(),
-        payload: {
-            ...payload
-        }
-    }
+export const serverPlayerMoved = (payload: ClientMovePayload): NetworkEvent<typeof EventTypes.CLIENT_MOVE, ClientMovePayload> => {
+    return CreateEvent(EventTypes.CLIENT_MOVE, payload);
 };
-
-export {
-    Event,
-    EventTypes,
-
-    serverPlayerConnected,
-    serverPlayerDisconnected,
-    serverConnectionEstablished,
-
-    serverPlayerMoving,
-    clientMove
-}

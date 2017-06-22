@@ -5,7 +5,7 @@ export class GaTrack {
         if (GaTrack.ONCE_POINTS.indexOf(trackPoint) !== -1) {
             return;
         }
-        if (typeof window !== 'undefined' && window.performance) {
+        if (typeof window !== 'undefined' && window.performance && typeof ga !== 'undefined') {
             ga('send', 'timing', trackPoint, 'load', Math.round(performance.now()));
         }
         GaTrack.ONCE_POINTS.push(trackPoint);

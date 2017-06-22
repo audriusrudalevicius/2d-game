@@ -42,5 +42,8 @@ export class Grid implements GameObject {
         this.context.closePath();
         this.context.stroke();
     }
+
+    unload(): void {
+    }
 }
 

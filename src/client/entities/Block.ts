@@ -56,5 +56,6 @@ export class Block implements GameObject {
             }
         }
     }
-
+    unload(): void {
+    }
 }

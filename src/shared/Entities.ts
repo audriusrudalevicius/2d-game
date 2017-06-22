@@ -9,14 +9,8 @@ export interface PositionInterface {
     y: number;
 }
 
-export interface GameStateInterface {
-    map: Array<Array<number>>;
-    players:Array<PlayerInterface>;
-    bombs:Array<BombInterface>;
-}
-
 export interface PlayerInterface {
-    clientID: string;
+    playerID: string;
     name: string;
     position:PositionInterface;
     kills: number;

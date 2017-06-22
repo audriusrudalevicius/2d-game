@@ -7,30 +7,30 @@ import Connection from "../shared/ConnectionInfo";
 import SocketEvents from "../shared/SocketEvents";
 import {GameState} from "./GameState";
 import {
-    Event,
     EventTypes,
+    PlayerMovedAction,
     serverConnectionEstablished,
     serverPlayerConnected,
     serverPlayerDisconnected
 } from "../shared/net/Events";
-import {ClientMovePayload} from "../shared/net/Payloads";
 import {Player} from "./entities/Player";
 import {SharedConfigInterface} from "../shared/Interfaces";
 import {DefaultConfig} from "../shared/Params";
 
-const CACHE_LIFE_TIME = 533280;
+const CACHE_LIFE_TIME = "31536000";
 
 class Server {
     private app: express.Application = express();
     private io: SocketIO.Server;
     private httpServer: http.Server;
-    private clients: {[key: string]: Connection};
+    private clients: { [key: string]: Connection };
     private gameState: GameState;
     private configFileContent: string;
     private configFile: SharedConfigInterface;
 
     constructor(gameState: GameState) {
         this.app = express();
+        this.app.disable('x-powered-by');
         this.app.use(compression());
         this.app.use('/assets', express.static(path.join(__dirname, 'assets'), {maxAge: CACHE_LIFE_TIME}));
         this.app.use('/main.bundle.js', express.static(path.join(__dirname, 'main.bundle.js'), {maxAge: CACHE_LIFE_TIME}));
@@ -78,32 +78,34 @@ class Server {
             } else {
                 player = this.gameState.findPlayer(socket.id);
             }
-
+            const stateSnapshot = this.gameState.getState();
             socket.emit(
                 SocketEvents.Event,
                 serverConnectionEstablished({
                     connectionInfo: this.clients[socket.id],
-                    playerID: player.clientID,
+                    playerID: player.playerID,
                     position: player.position,
-                    state: this.gameState.getState()
+                    map: stateSnapshot.map,
+                    players: stateSnapshot.players,
+                    bombs: stateSnapshot.bombs
                 })
             );
 
             socket.broadcast.emit(
                 SocketEvents.Event,
                 serverPlayerConnected({
-                    playerID: player.clientID,
+                    playerID: player.playerID,
                     position: player.position
                 })
             );
 
             console.log(`Server received client connection with id: ${ socket.id }`);
 
-            socket.on(SocketEvents.Event, (event: Event<any>) => {
+            socket.on(SocketEvents.Event, (event: ClientActions) => {
                 console.log(`IN - Event ${event.type}`, event);
                 switch (event.type) {
                     case EventTypes.CLIENT_MOVE:
-                        let payload = event.payload as ClientMovePayload;
+                        let payload = event as PlayerMovedAction;
                         /* Validate movement */
                         break;
                 }
@@ -117,5 +119,7 @@ class Server {
         });
     }
 }
+
+export type ClientActions = PlayerMovedAction;
 
 export default Server;
