@@ -19,7 +19,6 @@ export class PlayerInfo implements GameObject
     }
 
     render(delta: number): void {
-        this.context.fillStyle = '#000';
         let yPos = this.startPosY;
         this.engine.state.gameState.players.forEach(p => {
             this.context.fillStyle = p.color;
@@ -29,8 +28,21 @@ export class PlayerInfo implements GameObject
 
         this.context.fillStyle = this.engine.state.gameState.player.color;
         this.context.fillText(`Player x: ${this.engine.state.gameState.player.position.x} y: ${this.engine.state.gameState.player.position.y} - ${this.engine.state.gameState.player.name}`, this.startPosX, yPos);
+        yPos = yPos + this.increment;
+
+        this.context.fillStyle = '#000';
+        this.engine.objectManager.readyObjects.forEach((object) => {
+            let objectID = object.toString();
+            this.context.fillText(`Spartal: ${objectID}`, this.startPosX, yPos);
+            yPos = yPos + this.increment;
+        });
     }
 
     unload(): void {
+
+    }
+
+    toString(): string {
+        return `Debug text`;
     }
 }

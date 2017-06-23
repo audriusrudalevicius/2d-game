@@ -6,20 +6,24 @@ import {Engine} from "../Engine";
 export class ObjectManager {
     private pendingQueue = new Subject<string>();
     private pendingUnloadObjects = new Collections.Queue<string>();
-    private readyObjects: Map<string, GameObject> = new Map<string, GameObject>();
+    private _readyObjects: Map<string, GameObject> = new Map<string, GameObject>();
     private pendingObjects: Map<string, GameObject> = new Map<string, GameObject>();
+
+    get readyObjects(): Map<string, GameObject> {
+        return this._readyObjects;
+    }
 
     public run(engine: Engine) {
         this.pendingQueue.subscribe((p: string) => {
             const object = this.pendingObjects.get(p);
             object.init(engine);
             this.pendingObjects.delete(p);
-            this.readyObjects.set(p, object);
+            this._readyObjects.set(p, object);
         });
     }
 
     public findObject(key:string): GameObject {
-        return this.readyObjects.get(key) || this.pendingObjects.get(key);
+        return this._readyObjects.get(key) || this.pendingObjects.get(key);
     }
 
     public addObject(key: string, object: GameObject) {
@@ -37,10 +41,10 @@ export class ObjectManager {
     }
 
     public clear() {
-        this.readyObjects.forEach(o => {
+        this._readyObjects.forEach(o => {
             o.unload();
         });
-        this.readyObjects.clear();
+        this._readyObjects.clear();
     }
 
     public cleanUp(delta: number) {
@@ -50,16 +54,16 @@ export class ObjectManager {
         while (!this.pendingUnloadObjects.isEmpty()) {
             // TODO Check if there is enough time in frame.
             let next = this.pendingUnloadObjects.dequeue();
-            this.readyObjects.get(next).unload();
-            this.readyObjects.delete(next);
+            this._readyObjects.get(next).unload();
+            this._readyObjects.delete(next);
         }
     }
 
     public update(delta: number) {
-        this.readyObjects.forEach(o => o.update(delta));
+        this._readyObjects.forEach(o => o.update(delta));
     }
 
     public render(delta: number) {
-        this.readyObjects.forEach(o => o.render(delta));
+        this._readyObjects.forEach(o => o.render(delta));
     }
 }

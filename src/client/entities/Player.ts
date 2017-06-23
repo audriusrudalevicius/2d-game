@@ -35,4 +35,8 @@ export class Player implements GameObject {
 
     unload(): void {
     }
+
+    toString(): string {
+        return `Player X: ${this.position.x} Y: ${this.position.y}`;
+    }
 }

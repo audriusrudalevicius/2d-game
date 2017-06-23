@@ -58,4 +58,8 @@ export class Block implements GameObject {
     }
     unload(): void {
     }
+
+    toString(): string {
+        return 'Blocks';
+    }
 }

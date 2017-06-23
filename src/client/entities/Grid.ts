@@ -45,5 +45,9 @@ export class Grid implements GameObject {
 
     unload(): void {
     }
+
+    toString(): string {
+        return 'Grid';
+    }
 }
 
