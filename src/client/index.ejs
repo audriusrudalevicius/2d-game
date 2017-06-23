@@ -45,7 +45,7 @@
   <script type="text/javascript">
       window.GoogleAnalyticsObject='ga';window.ga=function(){ga.q.push(arguments)};ga.q=[];ga.l=+new Date;
       <% if (htmlWebpackPlugin.options.googleAnalytics.trackingId) { %>
-      ga('create','<%= htmlWebpackPlugin.options.googleAnalytics.trackingId %>','auto');
+      ga('create','<%= htmlWebpackPlugin.options.googleAnalytics.trackingId %>','auto', {'siteSpeedSampleRate': 100});
       <% } else { throw new Error("html-webpack-template requires googleAnalytics.trackingId config"); } %>
       <% if (htmlWebpackPlugin.options.googleAnalytics.pageViewOnLoad) { %>
       ga('send','pageview')
