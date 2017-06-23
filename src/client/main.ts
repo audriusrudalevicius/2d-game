@@ -8,6 +8,9 @@ if (typeof window == "undefined") {
     throw new Error("Run this script in browser.");
 }
 
+import 'autotrack';
+import 'autotrack/lib/plugins/event-tracker';
+
 const BUILD_ID = window['NODE_ENV'] !== 'development' ? window['CIRCLE_BUILD_NUM'] : 'dev';
 const config = typeof window['SHARED_CONFIG'] !== 'undefined' ? window['SHARED_CONFIG'] : DefaultConfig;
 const serverURL = config.serverUrl + ':' + config.serverPort;

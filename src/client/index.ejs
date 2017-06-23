@@ -48,6 +48,9 @@
       ga('create','<%= htmlWebpackPlugin.options.googleAnalytics.trackingId %>','auto', {'siteSpeedSampleRate': 100});
       <% } else { throw new Error("html-webpack-template requires googleAnalytics.trackingId config"); } %>
       <% if (htmlWebpackPlugin.options.googleAnalytics.pageViewOnLoad) { %>
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
       ga('send','pageview')
       <% } %>
   </script>

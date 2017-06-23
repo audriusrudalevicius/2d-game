@@ -26,7 +26,8 @@ const commonRules = [
     {
         enforce: 'pre',
         test: /\.js$/,
-        use: 'source-map-loader'
+        exclude: /node_modules\/(?!(autotrack|dom-utils))/,
+        use: ['source-map-loader', 'babel-loader']
     },
     {
         enforce: 'pre',
