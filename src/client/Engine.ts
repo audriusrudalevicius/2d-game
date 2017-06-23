@@ -6,7 +6,7 @@ import {Grid} from "./entities/Grid";
 import NetworkService from "./NetworkService";
 import {clientPlayerMoving, EventTypes, serverPlayerMoved} from "../shared/net/Events";
 import {MOVEMENT_KEYS} from "../shared/Keys";
-import {KeyToDirection} from "./Utils";
+import {DirectionToPos, KeyToDirection} from "./Utils";
 import "rxjs/add/operator/retryWhen";
 import "rxjs/add/operator/retry";
 import "rxjs/add/operator/delay";
@@ -106,16 +106,17 @@ export class Engine {
             o.filter(e => MOVEMENT_KEYS.indexOf(e.keyCode) !== -1 && e.type == 'keydown')
                 .debounceTime(Engine.keyboardInputDelay)
                 .subscribe((e => {
+                    const direction = KeyToDirection(e.keyCode);
                     const event = {
                         playerID: this._net.connectionInfo.clientID,
-                        origin: {
-                            x: this._state.getValue().gameState.player.position.x,
-                            y: this._state.getValue().gameState.player.position.y
-                        },
-                        direction: KeyToDirection(e.keyCode)
+                        origin: this._state.getValue().gameState.player.position,
+                        direction
                     };
                     this._net.send(clientPlayerMoving(event));
-                    this._state.next(applyGameState(this._state.getValue(), serverPlayerMoved(event)));
+                    this._state.next(applyGameState(this._state.getValue(), serverPlayerMoved({
+                        playerID: this._net.connectionInfo.clientID,
+                        destination: DirectionToPos(this._state.getValue().gameState.player.position, direction)
+                    })));
                 }))
         );
 

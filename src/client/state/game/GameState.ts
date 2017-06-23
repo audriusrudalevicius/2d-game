@@ -48,19 +48,17 @@ export const RemovePlayer = (state: GameState, action: PlayerLeavesAction): Game
 
 export const MovePlayerPosition = (state: GameState, action: PlayerMovedAction): GameState => {
     if (action.payload.playerID === state.player.playerID) {
-        const newPosition = DirectionToPos(state.player.position, action.payload.direction);
         return {
             ...state,
-            player: {...state.player, position: newPosition}
+            player: {...state.player, position: action.payload.destination}
         };
     }
 
     const player = state.players.find(p => p.playerID === action.payload.playerID);
-    const newPosition = DirectionToPos(player.position, action.payload.direction);
     return {
         ...state,
         players: state.players.map(player => player.playerID === action.payload.playerID
-            ? {...player, position: newPosition}
+            ? {...player, position: action.payload.destination}
             : player
         )
     };

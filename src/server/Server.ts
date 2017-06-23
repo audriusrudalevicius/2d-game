@@ -8,7 +8,7 @@ import SocketEvents from "../shared/SocketEvents";
 import {GameState} from "./GameState";
 import {
     EventTypes,
-    PlayerMovedAction,
+    PlayerMovedAction, PlayerMovingAction,
     serverConnectionEstablished,
     serverPlayerConnected,
     serverPlayerDisconnected,
@@ -18,6 +18,7 @@ import {Player} from "./entities/Player";
 import {SharedConfigInterface} from "../shared/Interfaces";
 import {DefaultConfig} from "../shared/Params";
 import {PlayerInterface} from "../shared/Entities";
+import {DirectionToPos} from "../client/Utils";
 
 const CACHE_LIFE_TIME = 3153600000;
 
@@ -109,13 +110,18 @@ class Server {
                 console.log(`IN - Event ${event.type}`, event);
                 switch (event.type) {
                     case EventTypes.CLIENT_MOVE:
-                        let action = event as PlayerMovedAction;
+                        let action = event as PlayerMovingAction;
+                        const newPos = DirectionToPos(action.payload.origin, action.payload.direction);
+                        const player = this.gameState.players.find(p => p.playerID === action.payload.playerID);
+                        if (!player) {
+                            return;
+                        }
+                        player.position = newPos;
                         socket.broadcast.emit(
                             SocketEvents.Event,
                             serverPlayerMoved({
                                 playerID: action.payload.playerID,
-                                origin: action.payload.origin,
-                                direction: action.payload.direction
+                                destination: player.position
                             })
                         );
                         break;
@@ -132,6 +138,6 @@ class Server {
     }
 }
 
-export type ClientActions = PlayerMovedAction;
+export type ClientActions = PlayerMovingAction;
 
 export default Server;

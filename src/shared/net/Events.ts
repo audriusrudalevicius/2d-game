@@ -42,10 +42,10 @@ export const serverPlayerDisconnected = (payload: ServerPlayerDisconnectedPayloa
     return CreateEvent(EventTypes.SERVER_PLAYER_DISCONNECTED, payload);
 };
 
-export const clientPlayerMoving = (payload: ClientMovePayload): NetworkEvent<typeof EventTypes.CLIENT_MOVE, ServerPlayerMovingPayload> => {
+export const clientPlayerMoving = (payload: ClientMovePayload): NetworkEvent<typeof EventTypes.CLIENT_MOVE, ClientMovePayload> => {
     return CreateEvent(EventTypes.CLIENT_MOVE, payload);
 };
 
-export const serverPlayerMoved = (payload: ServerPlayerMovingPayload): NetworkEvent<typeof EventTypes.SERVER_PLAYER_MOVED, ClientMovePayload> => {
+export const serverPlayerMoved = (payload: ServerPlayerMovingPayload): NetworkEvent<typeof EventTypes.SERVER_PLAYER_MOVED, ServerPlayerMovingPayload> => {
     return CreateEvent(EventTypes.SERVER_PLAYER_MOVED, payload);
 };

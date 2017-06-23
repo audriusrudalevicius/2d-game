@@ -25,8 +25,7 @@ export interface ServerPlayerConnectedPayload {
 
 export interface ServerPlayerMovingPayload {
     playerID: string,
-    origin: PositionInterface,
-    direction: Direction
+    destination: PositionInterface
 }
 
 export interface ClientMovePayload {

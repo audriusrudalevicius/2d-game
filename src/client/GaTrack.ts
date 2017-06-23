@@ -1,7 +1,7 @@
 export class GaTrack {
-    private static ONCE_POINTS:TrackPoint[] = [];
+    private static ONCE_POINTS:string[] = [];
 
-    public static TrackTimeOnce(trackPoint:TrackPoint) {
+    public static TrackTimeOnce(trackPoint:string) {
         if (GaTrack.ONCE_POINTS.indexOf(trackPoint) !== -1) {
             return;
         }
@@ -12,7 +12,7 @@ export class GaTrack {
     }
 }
 
-export enum TrackPoint {
-    JS_LOAD = 'js_load',
-    GAME_CONNECT = 'game_connect'
+export const TrackPoint = {
+    JS_LOAD: 'js_load',
+    GAME_CONNECT: 'game_connect'
 }
