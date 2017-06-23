@@ -31,7 +31,9 @@ export class ObjectManager {
     }
 
     public removeObject(key: string) {
-        this.pendingUnloadObjects.enqueue(key);
+        if (!this.pendingUnloadObjects.contains(key)) {
+            this.pendingUnloadObjects.enqueue(key);
+        }
     }
 
     public clear() {

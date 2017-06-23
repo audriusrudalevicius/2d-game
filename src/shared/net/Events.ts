@@ -26,6 +26,7 @@ export const EventTypes = {
 
 export type ConnectedToServerAction = NetworkEvent<typeof EventTypes.SERVER_CONNECTION_ESTABLISHED, ServerConnectionEstablishedPayload>;
 export type PlayerJoinsAction = NetworkEvent<typeof EventTypes.SERVER_PLAYER_CONNECTED, ServerPlayerConnectedPayload>;
+export type PlayerLeavesAction = NetworkEvent<typeof EventTypes.SERVER_PLAYER_DISCONNECTED, ServerPlayerDisconnectedPayload>;
 export type PlayerMovingAction = NetworkEvent<typeof EventTypes.SERVER_PLAYER_MOVED, ClientMovePayload>;
 export type PlayerMovedAction = NetworkEvent<typeof EventTypes.SERVER_PLAYER_MOVED, ServerPlayerMovingPayload>;
 
@@ -38,13 +39,13 @@ export const serverPlayerConnected = (payload: ServerPlayerConnectedPayload): Ne
 };
 
 export const serverPlayerDisconnected = (payload: ServerPlayerDisconnectedPayload): NetworkEvent<typeof EventTypes.SERVER_PLAYER_CONNECTED, ServerPlayerDisconnectedPayload> => {
-    return CreateEvent(EventTypes.SERVER_PLAYER_CONNECTED, payload);
+    return CreateEvent(EventTypes.SERVER_PLAYER_DISCONNECTED, payload);
 };
 
-export const clientPlayerMoving = (payload: ServerPlayerMovingPayload): NetworkEvent<typeof EventTypes.SERVER_PLAYER_MOVED, ServerPlayerMovingPayload> => {
-    return CreateEvent(EventTypes.SERVER_PLAYER_MOVED, payload);
-};
-
-export const serverPlayerMoved = (payload: ClientMovePayload): NetworkEvent<typeof EventTypes.CLIENT_MOVE, ClientMovePayload> => {
+export const clientPlayerMoving = (payload: ClientMovePayload): NetworkEvent<typeof EventTypes.CLIENT_MOVE, ServerPlayerMovingPayload> => {
     return CreateEvent(EventTypes.CLIENT_MOVE, payload);
+};
+
+export const serverPlayerMoved = (payload: ServerPlayerMovingPayload): NetworkEvent<typeof EventTypes.SERVER_PLAYER_MOVED, ClientMovePayload> => {
+    return CreateEvent(EventTypes.SERVER_PLAYER_MOVED, payload);
 };

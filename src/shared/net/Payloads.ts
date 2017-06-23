@@ -9,8 +9,7 @@ export interface Player {
 
 export interface ServerConnectionEstablishedPayload {
     connectionInfo: Connection,
-    playerID: string,
-    position: PositionInterface,
+    player: PlayerInterface,
     map: number[][],
     players:Array<PlayerInterface>;
     bombs:Array<BombInterface>;
@@ -21,8 +20,7 @@ export interface ServerPlayerDisconnectedPayload {
 }
 
 export interface ServerPlayerConnectedPayload {
-    playerID: string,
-    position: PositionInterface
+    player:PlayerInterface
 }
 
 export interface ServerPlayerMovingPayload {
@@ -33,6 +31,6 @@ export interface ServerPlayerMovingPayload {
 
 export interface ClientMovePayload {
     playerID: string,
-    position: PositionInterface,
-    movement: MovementInterface
+    origin: PositionInterface,
+    direction: Direction
 }

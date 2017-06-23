@@ -22,6 +22,7 @@ class NetworkService {
     public connect(): Observable<NetworkEvent<any, any>> {
         this._observable = new Observable((observer) => {
             this.socket = SocketIOClient(this._serverUrl);
+
             this.socket.on(SocketEvents.Event, (event: NetworkEvent<any, any>) => {
                 switch (event.type) {
                     case EventTypes.SERVER_CONNECTION_ESTABLISHED:
@@ -32,7 +33,7 @@ class NetworkService {
                 observer.next(event);
             });
             this.socket.on(SocketEvents.Disconnect, () => {
-                observer.complete();
+                observer.error({});
             });
             return () => {
                 this.socket.disconnect();

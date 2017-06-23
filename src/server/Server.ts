@@ -11,13 +11,15 @@ import {
     PlayerMovedAction,
     serverConnectionEstablished,
     serverPlayerConnected,
-    serverPlayerDisconnected
+    serverPlayerDisconnected,
+    serverPlayerMoved
 } from "../shared/net/Events";
 import {Player} from "./entities/Player";
 import {SharedConfigInterface} from "../shared/Interfaces";
 import {DefaultConfig} from "../shared/Params";
+import {PlayerInterface} from "../shared/Entities";
 
-const CACHE_LIFE_TIME = "31536000";
+const CACHE_LIFE_TIME = 3153600000;
 
 class Server {
     private app: express.Application = express();
@@ -63,6 +65,7 @@ class Server {
         });
 
         this.app.get('/', function (req, res) {
+            res.setHeader('cache-control', 'max-age=' + CACHE_LIFE_TIME / 1000);
             res.sendFile(path.join(__dirname, 'index.html'));
         });
 
@@ -71,6 +74,7 @@ class Server {
                 clientID: socket.id,
                 connectionTimestamp: new Date().getTime()
             };
+
             let player: Player;
             if (!this.gameState.findPlayer(socket.id)) {
                 player = new Player(socket.id, this.gameState.map.pickRandomFreePosition());
@@ -79,40 +83,48 @@ class Server {
                 player = this.gameState.findPlayer(socket.id);
             }
             const stateSnapshot = this.gameState.getState();
+            if (!player.position) {
+                throw new Error('No position set to player');
+            }
+
             socket.emit(
                 SocketEvents.Event,
                 serverConnectionEstablished({
                     connectionInfo: this.clients[socket.id],
-                    playerID: player.playerID,
-                    position: player.position,
+                    player: player as PlayerInterface,
                     map: stateSnapshot.map,
-                    players: stateSnapshot.players,
+                    players: stateSnapshot.players.filter(p => p.playerID !== player.playerID),
                     bombs: stateSnapshot.bombs
                 })
             );
 
             socket.broadcast.emit(
                 SocketEvents.Event,
-                serverPlayerConnected({
-                    playerID: player.playerID,
-                    position: player.position
-                })
+                serverPlayerConnected({player})
             );
 
-            console.log(`Server received client connection with id: ${ socket.id }`);
+            console.log(`Server received client connection with id: ${ socket.id } Name: ${player.name} Pos: x:${player.position.x} y:${player.position.y}`);
 
             socket.on(SocketEvents.Event, (event: ClientActions) => {
                 console.log(`IN - Event ${event.type}`, event);
                 switch (event.type) {
                     case EventTypes.CLIENT_MOVE:
-                        let payload = event as PlayerMovedAction;
-                        /* Validate movement */
+                        let action = event as PlayerMovedAction;
+                        socket.broadcast.emit(
+                            SocketEvents.Event,
+                            serverPlayerMoved({
+                                playerID: action.payload.playerID,
+                                origin: action.payload.origin,
+                                direction: action.payload.direction
+                            })
+                        );
                         break;
                 }
             });
 
             socket.on(SocketEvents.Disconnect, () => {
-                this.io.emit('event', serverPlayerDisconnected({playerID: this.clients[socket.id].clientID}));
+                console.log(`Client dropped connection with id: ${ socket.id } Name: ${player.name} Pos: x:${player.position.x} y:${player.position.y}`);
+                this.io.emit(SocketEvents.Event, serverPlayerDisconnected({playerID: this.clients[socket.id].clientID}));
                 delete this.clients[socket.id];
                 this.gameState.removePlayer(socket.id);
             });

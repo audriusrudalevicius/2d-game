@@ -31,8 +31,6 @@ export class Player implements GameObject {
         this.context.stroke();
         this.context.closePath();
         this.context.stroke();
-
-        this.context.fillText('x:' + this.position.x + ' ' + 'y:' + this.position.y, 10, 10);
     }
 
     unload(): void {

@@ -8,5 +8,5 @@ gameState.start();
 let instance = new Server(gameState);
 instance.listen();
 
-const BUILD_ID = process.env.NODE_ENV !== 'development' ? process.env.CIRCLE_BUILD_NUM : 'dev';
+const BUILD_ID = process.env.NODE_ENV !== 'development' ? process.env.CIRCLE_BUILD_NUM || 'dev' : 'dev';
 console.log('Started! Build:' + BUILD_ID);

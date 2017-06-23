@@ -15,6 +15,7 @@ export interface PlayerInterface {
     position:PositionInterface;
     kills: number;
     suicides: number;
+    color: string;
 }
 
 export interface BombInterface {
